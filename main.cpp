@@ -1,26 +1,87 @@
 #include <iostream>
 #include <SFML/Network.hpp>
+#include <string>
+#include <thread>
 
-void server()
+void Server()
 {
     sf::TcpListener listener;
     sf::Socket::Status status;
     status = listener.listen(4300);
     if(status != sf::Socket::Done)
     {
-
-    }  
+        std::cout << "Error listening\n";
+        return;
+    }
+    sf::TcpSocket socket;
+    status = listener.accept(socket); // Blocking
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Error accepting\n";
+        return;
+    }
+    sf::Packet packet;
+    status = socket.receive(packet);
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Error receiving\n";
+        return;
+    }
+    std::string message;
+    packet >> message;
+    std::cout << message;
+    packet.clear();
+    packet << "message received";
+    status = socket.send(packet);
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Error sending\n";
+        return;
+    }
 
 }
 
-void client()
+void Client()
 {
+    sf::TcpSocket socket;
+    sf::IpAddress address("localhost");
+    sf::Socket::Status status;
+    status = socket.connect(address, 4300);
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Error connecting\n";
+        return;
+    }
+    sf::Packet packet;
+    packet << "I am a message";
+    status = socket.send(packet);
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Error sending\n";
+        return;
+    }
+    packet.clear();
+    status = socket.receive(packet);
+    if (status != sf::Socket::Done)
+    {
+        std::cout << "Error receiving\n";
+        return;
+    }
+    std::string message;
+    packet >> message;
+    std::cout << message;
 
 }
 
-void main
+int main()
 {
-
+    std::thread serverThread(&Server);
+    //std::thread serverThread(&Client);
+    std::this_thread::sleep_for(std::chrono::microseconds(100));
+    // Hack
+    Client();
+    serverThread.join();
+    return 0;
 }
 
 

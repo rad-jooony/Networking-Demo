@@ -7,3 +7,5 @@
 - To run the game, in the command line, type:
 
 > make run
+
+- get a key if you wna to use git on another computer
