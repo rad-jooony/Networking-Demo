@@ -43,7 +43,7 @@ int main()
     // ****************************************
     // Initialise
     srand(time(NULL));
-    RenderWindow app(VideoMode(640, 480), "Car Racing Game!");
+    RenderWindow app(VideoMode(1000,800), "Car Racing Game!");
     app.setFramerateLimit(60);
     Texture t1, t2;
     t1.loadFromFile("images/background.png");
