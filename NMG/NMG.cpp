@@ -20,7 +20,9 @@ int points[num][2] = { 300, 610,
 
 struct Car
 {
-    float x, y, speed, angle; int n;
+    float x, y, //Position in world
+        speed, angle;
+    int n; //Current checkpoint
     Car() { speed = 2; angle = 0; n = 0; }
     void move()
     {
@@ -34,7 +36,9 @@ struct Car
         float beta = angle - atan2(tx - x, -ty + y);
         if (sin(beta) < 0) angle += 0.005 * speed; else angle -= 0.005 * speed;
         // Check if passed a checkpoint
-        if ((x - tx) * (x - tx) + (y - ty) * (y - ty) < 25 * 25) n = (n + 1) % num; // TODO: simplify
+        //if ((x - tx) * (x - tx) + (y - ty) * (y - ty) < 25 * 25)
+        if (pow(x - tx,2) + pow(y - ty, 2) < 625)
+            n = (n + 1) % num; // TODO: simplify
     }
 };
 
@@ -45,21 +49,21 @@ int main()
     srand(time(NULL));
     RenderWindow app(VideoMode(1000,800), "Car Racing Game!");
     app.setFramerateLimit(60);
-    Texture t1, t2;
-    t1.loadFromFile("images/background.png");
-    t2.loadFromFile("images/car.png");
-    t1.setSmooth(true);
-    t2.setSmooth(true);
-    Sprite sBackground(t1), sCar(t2);
+    Texture tBackground, tCar;
+    tBackground.loadFromFile("images/background.png");
+    tCar.loadFromFile("images/car.png");
+    tBackground.setSmooth(true);
+    tCar.setSmooth(true);
+    Sprite sBackground(tBackground), sCar(tCar);
     sBackground.scale(2, 2);
-    sCar.setOrigin(22, 22);
-    float R = 22;
-    const int N = 5;
-    Car car[N];
+    sCar.setOrigin(22, 22); // centre of cars sprite
+    float CollisionVal = 22; // used for collision checks, value dictates the box size
+    const int Player = 5;
+    Car car[Player];
     Color colors[5] = { Color::Red, Color::Green, Color::Magenta, Color::Blue, Color::White };
 
     // Starting positions
-    for (int i = 0; i < N; i++)
+    for (int i = 0; i < Player; i++)
     {
         car[i].x = 300 + i * 50;
         car[i].y = 1700 + i * 80;
@@ -70,7 +74,6 @@ int main()
     float acc = 0.2, dec = 0.3;
     float turnSpeed = 0.08;
     int offsetX = 0, offsetY = 0;
-
 
     // ****************************************
     // Loop
@@ -83,13 +86,14 @@ int main()
             if (e.type == Event::Closed)
                 app.close();
         }
+
         // Step 1: user input
         bool Up = 0, Right = 0, Down = 0, Left = 0;
         if (Keyboard::isKeyPressed(Keyboard::Up))    Up = 1;
         if (Keyboard::isKeyPressed(Keyboard::Right)) Right = 1;
         if (Keyboard::isKeyPressed(Keyboard::Down))  Down = 1;
         if (Keyboard::isKeyPressed(Keyboard::Left))  Left = 1;
-        //
+        
         // Step 2: update
         //car movement
         if (Up && speed < maxSpeed)
@@ -112,19 +116,19 @@ int main()
         if (Left && speed != 0)   angle -= turnSpeed * speed / maxSpeed;
         car[0].speed = speed;
         car[0].angle = angle;
-        for (int i = 0; i < N; i++) car[i].move();
-        for (int i = 1; i < N; i++) car[i].findTarget();
+        for (int i = 0; i < Player; i++) car[i].move();
+        for (int i = 1; i < Player; i++) car[i].findTarget();
         //collision
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < Player; i++)
         {
-            for (int j = 0; j < N; j++)
+            for (int j = 0; j < Player; j++)
             {
                 if (i == j)
                 {
                     break;
                 }
                 int dx = 0, dy = 0;
-                while (dx * dx + dy * dy < 4 * R * R)
+                while (dx * dx + dy * dy < 4 * CollisionVal * CollisionVal)
                 {
                     car[i].x += dx / 10.0;
                     car[i].x += dy / 10.0;
@@ -144,7 +148,7 @@ int main()
         if (car[0].y > 240) offsetY = car[0].y - 240;
         sBackground.setPosition(-offsetX, -offsetY);
         app.draw(sBackground);
-        for (int i = 0; i < N; i++)
+        for (int i = 0; i < Player; i++)
         {
             sCar.setPosition(car[i].x - offsetX, car[i].y - offsetY);
             sCar.setRotation(car[i].angle * 180 / 3.141593);
