@@ -6,6 +6,20 @@
 
 //using namespace sf;
 
+/*
+    in main:
+    ask the user if they want a server or client
+
+    Later:
+
+    UDP send bcast message
+    set udp socket to non blocking
+    wait a bit
+    try to receive
+    if there is a server, the connect to it
+    else spawn a server, wait a bit then connect  
+*/
+
 const int num = 8; //checkpoints
 // TODO: use checkpoint to make sure we are on the track.
 // Slow speed when not on the track.
@@ -75,7 +89,7 @@ int main()
     float maxSpeed = 12.0;
     float acc = 0.2, dec = 0.3;
     float turnSpeed = 0.08;
-    int offsetX = 0, offsetY = 0;
+    int offsetX = 0, offsetY = 300; // Camera position possibly
 
     // ****************************************
     // Loop
