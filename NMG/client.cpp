@@ -17,14 +17,14 @@ int client()
     // TODO launch a receiver thread to receive messages from the server.
     std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue);
     std::thread recvThread(&Receiver::recv_loop, receiver);
-    std::string s = "";
+    std::string s = "string";
     while (1)
     {
         std::getline(std::cin, s);
         std::cout << "Sending: \"" << s << "\"" << std::endl;
-        // TODO send messages to the server
-        socket->send(s.c_str(), s.size());
-        // TODO check that is works
+        
+        socket->send(s.c_str(), s.size()); // send messages to the server
+        // TODO check that this works
     }
     recvThread.join();
     return 0;

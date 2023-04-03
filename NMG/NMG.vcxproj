@@ -148,8 +148,9 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="accepter.cpp" />
+    <ClCompile Include="accepter listener.cpp" />
     <ClCompile Include="client.cpp" />
+    <ClCompile Include="game.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="receiver.cpp" />
     <ClCompile Include="server.cpp" />

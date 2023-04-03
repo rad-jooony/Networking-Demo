@@ -5,6 +5,11 @@
 #include <sstream>
 #include <thread>
 
+// A listener, that looks out for for connections, when it does, it becomes attached to the specific port. It does not accept 
+// the connection.
+
+// The Accepter
+
 Accepter::Accepter(Queue<std::string>& q, List<std::shared_ptr<sf::TcpSocket>>& s):
     queue_(q),
     socket_(s)
@@ -13,22 +18,23 @@ Accepter::Accepter(Queue<std::string>& q, List<std::shared_ptr<sf::TcpSocket>>& 
 void Accepter::operator()()//double bracket makes this a function
 {
     sf::TcpListener listener;
-    // TODO the listener has to listen.
     if (listener.listen(TCP_PORT) != sf::Socket::Done)
     {
-        std::cerr << "Error listening to accepter";
+        std::cerr << "TCP Error listening to accepter";
         return;
     }
-    std::cout << "Bound to port\n";
+    std::cout << "TCP Bound to port : " << TCP_PORT << "\n";
+
     while (true)
     {
         std::shared_ptr<sf::TcpSocket> socket = std::make_shared<sf::TcpSocket>();
-        // TODO accept a connection on socket
         if (listener.accept(*socket) != sf::Socket::Done)
         {
-            std::cerr << "Cannot accept connection";
+            std::cerr << "TCP Cannot accept connection";
             return;
         }
+        // Now it is able to accept messages
+
         socket_.push(socket);
         std::stringstream ss;
         ss << "Accepted a connection from: "
@@ -38,8 +44,9 @@ void Accepter::operator()()//double bracket makes this a function
             << std::endl;
         std::cout << ss.str();
         std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue_);
-        // TODO launch a thread to receive with the receiver
-        std::thread(&Receiver::recv_loop, receiver).detach();
+        
+        // launch a thread to receive with the receiver
+        std::thread(&Receiver::recv_loop, receiver).detach(); // thread lauches detached, meaning it doesnt need to wait to catch up
     }
 }
 

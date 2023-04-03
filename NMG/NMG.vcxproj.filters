@@ -13,25 +13,34 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Source Files\Server">
+    <Filter Include="Header Files\Utility">
+      <UniqueIdentifier>{d26299c4-99b6-4219-9eb6-435714adf598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Client-Side">
+      <UniqueIdentifier>{0ddacad6-2848-45cd-aed6-3bc3dc834cdc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Server-Side">
       <UniqueIdentifier>{4eb574f2-4ced-4bd6-a12f-32bd0913eca0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="client.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="receiver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="accepter.cpp">
-      <Filter>Source Files\Server</Filter>
+    <ClCompile Include="accepter listener.cpp">
+      <Filter>Source Files\Server-Side</Filter>
     </ClCompile>
     <ClCompile Include="server.cpp">
-      <Filter>Source Files\Server</Filter>
+      <Filter>Source Files\Server-Side</Filter>
+    </ClCompile>
+    <ClCompile Include="client.cpp">
+      <Filter>Source Files\Client-Side</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files\Client-Side</Filter>
+    </ClCompile>
+    <ClCompile Include="receiver.cpp">
+      <Filter>Source Files\Client-Side</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -48,10 +57,10 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="util.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
     <ClInclude Include="clientInfo.h">
-      <Filter>Header Files</Filter>
+      <Filter>Header Files\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

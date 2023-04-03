@@ -7,6 +7,8 @@
 #include <sstream>
 #include <thread>
 
+// Part of the TCP Socket. Recives messages
+
 Receiver::Receiver(std::shared_ptr<sf::TcpSocket> s,
         Queue<std::string> &q):
     socket_(s),
