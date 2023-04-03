@@ -4,7 +4,7 @@
 #include <cmath>
 #include <iostream>
 
-using namespace sf;
+//using namespace sf;
 
 const int num = 8; //checkpoints
 // TODO: use checkpoint to make sure we are on the track.
@@ -17,6 +17,8 @@ int points[num][2] = { 300, 610,
     2550,1680,
     2560,3150,
     500, 3300 };
+
+
 
 struct Car
 {
@@ -47,20 +49,20 @@ int main()
     // ****************************************
     // Initialise
     srand(time(NULL));
-    RenderWindow app(VideoMode(1000,800), "Car Racing Game!");
+    sf::RenderWindow app(sf::VideoMode(1000,800), "Car Racing Game!");
     app.setFramerateLimit(60);
-    Texture tBackground, tCar;
+    sf::Texture tBackground, tCar;
     tBackground.loadFromFile("images/background.png");
     tCar.loadFromFile("images/car.png");
     tBackground.setSmooth(true);
     tCar.setSmooth(true);
-    Sprite sBackground(tBackground), sCar(tCar);
+    sf::Sprite sBackground(tBackground), sCar(tCar);
     sBackground.scale(2, 2);
     sCar.setOrigin(22, 22); // centre of cars sprite
     float CollisionVal = 22; // used for collision checks, value dictates the box size
     const int Player = 5;
     Car car[Player];
-    Color colors[5] = { Color::Red, Color::Green, Color::Magenta, Color::Blue, Color::White };
+    sf::Color colors[5] = { sf::Color::Red, sf::Color::Green, sf::Color::Magenta, sf::Color::Blue, sf::Color::White };
 
     // Starting positions
     for (int i = 0; i < Player; i++)
@@ -80,19 +82,19 @@ int main()
 
     while (app.isOpen())
     {
-        Event e;
+        sf::Event e;
         while (app.pollEvent(e))
         {
-            if (e.type == Event::Closed)
+            if (e.type == sf::Event::Closed)
                 app.close();
         }
 
         // Step 1: user input
         bool Up = 0, Right = 0, Down = 0, Left = 0;
-        if (Keyboard::isKeyPressed(Keyboard::Up))    Up = 1;
-        if (Keyboard::isKeyPressed(Keyboard::Right)) Right = 1;
-        if (Keyboard::isKeyPressed(Keyboard::Down))  Down = 1;
-        if (Keyboard::isKeyPressed(Keyboard::Left))  Left = 1;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))    Up = 1;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) Right = 1;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))  Down = 1;
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))  Left = 1;
         
         // Step 2: update
         //car movement
@@ -141,7 +143,7 @@ int main()
             }
         }
         // Step 3: Render
-        app.clear(Color::White);
+        app.clear(sf::Color::White);
         // TODO: Stay within the limit of the map.
         // TODO: Don't show white at bottom/right.
         if (car[0].x > 320) offsetX = car[0].x - 320;
@@ -157,6 +159,5 @@ int main()
         }
         app.display();
     }
-
     return 0;
 }
