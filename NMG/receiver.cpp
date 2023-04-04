@@ -7,7 +7,7 @@
 #include <sstream>
 #include <thread>
 
-// Part of the TCP Socket. Recives messages
+// Part of the TCP Socket. Recives messages. Used by both Client and Server (i think)
 
 Receiver::Receiver(std::shared_ptr<sf::TcpSocket> s,
         Queue<std::string> &q):
@@ -28,8 +28,8 @@ void Receiver::recv_loop()
     {
         std::memset(buffer, 0, 256);
         std::size_t received;
-        // TODO receive a message here
-        socket_->receive(buffer, 256, received);
+        
+        socket_->receive(buffer, 256, received); //receive a message here
         // TODO, socket may be closed
         {
             std::stringstream ss;

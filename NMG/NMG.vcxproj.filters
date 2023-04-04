@@ -24,7 +24,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="accepter listener.cpp">
+    <ClCompile Include="accepter.cpp">
       <Filter>Source Files\Server-Side</Filter>
     </ClCompile>
     <ClCompile Include="server.cpp">
@@ -36,10 +36,10 @@
     <ClCompile Include="game.cpp">
       <Filter>Source Files\Client-Side</Filter>
     </ClCompile>
-    <ClCompile Include="receiver.cpp">
-      <Filter>Source Files\Client-Side</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="receiver.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

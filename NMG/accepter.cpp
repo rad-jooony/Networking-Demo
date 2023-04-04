@@ -8,8 +8,6 @@
 // A listener, that looks out for for connections, when it does, it becomes attached to the specific port. It does not accept 
 // the connection.
 
-// The Accepter
-
 Accepter::Accepter(Queue<std::string>& q, List<std::shared_ptr<sf::TcpSocket>>& s):
     queue_(q),
     socket_(s)
@@ -34,15 +32,13 @@ void Accepter::operator()()//double bracket makes this a function
             return;
         }
         // Now it is able to accept messages
-
         socket_.push(socket);
+
         std::stringstream ss;
-        ss << "Accepted a connection from: "
-            << socket->getRemoteAddress()
-            << ":"
-            << socket->getRemotePort()
-            << std::endl;
+        ss << "Accepted a connection from: " << socket->getRemoteAddress() << ":" << socket->getRemotePort() << std::endl;
         std::cout << ss.str();
+
+        
         std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue_);
         
         // launch a thread to receive with the receiver

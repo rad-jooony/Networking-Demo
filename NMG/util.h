@@ -1,3 +1,3 @@
-#define PORT 4300
-#define TCP_PORT 4301
+#define PORT 4301
+#define TCP_PORT 4300
 
