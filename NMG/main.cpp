@@ -21,6 +21,8 @@
 
 void server()
 {
+	std::cerr << "This is the Server \n";
+
 	// Create a listener to wait for incoming connections
 	sf::TcpListener listener;
 	// Wait for a connection
@@ -32,6 +34,7 @@ void server()
 	}
 	std::cerr << "Server connect to Client\n";
 
+
 	sf::TcpSocket socket;
 	if (listener.accept(socket) != sf::Socket::Done) // Blocking; loop this so it cann accept more connections
 	{
@@ -39,29 +42,33 @@ void server()
 		return;
 	}
 	// now we can receive messages
-
-	sf::Packet packet;
-	if (socket.receive(packet) != sf::Socket::Done) // Blocking; receive thread
+	while (1)
 	{
-		std::cerr << "TCP Server - error receiving\n";
-		return;
-	}
-	//socket.setBlocking(false);
-	std::string message;
-	packet >> message;
-	std::cout << message << "\n";
-	packet.clear();
-	packet << "message got!";
+		sf::Packet packet;
+		if (socket.receive(packet) != sf::Socket::Done) // Blocking; receive thread
+		{
+			std::cerr << "TCP Server - error receiving\n";
+			return;
+		}
+		//socket.setBlocking(false);
+		std::string message;
+		packet >> message;
+		packet.clear();
+		std::cerr << "Server: Client says : " << message << "\n";
 
-	if (socket.send(packet) != sf::Socket::Done) // Blocking; main thread
-	{
-		std::cerr << "TCP Server - error sending\n";
-		return;
+		packet << "Server has responded\n";
+		if (socket.send(packet) != sf::Socket::Done) // Blocking; main thread
+		{
+			std::cerr << "TCP Server - error sending\n";
+			return;
+		}
 	}
 }
 
+
 void client()
 {
+	std::cerr << "This is the Client \n";
 	// Create a socket and connect it
 	sf::TcpSocket socket;
 	sf::IpAddress address("localhost");
@@ -75,20 +82,27 @@ void client()
 	sf::Packet packet;
 	packet << "Yahhhh das hot";
 
-	if (socket.send(packet) != sf::Socket::Done) // This needs to loop
+	while (1)
 	{
-		std::cerr << "TCP Client - error sending\n";
-		return;
+		std::string message;
+		std::cin >> message;
+		sf::Packet packet;
+		packet << message;
+		if (socket.send(packet) != sf::Socket::Done)
+		{
+			std::cerr << "TCP Client - error sending\n";
+			return;
+		}
+		packet.clear();
+		if (socket.receive(packet) != sf::Socket::Done)
+		{
+			std::cerr << "TCP Client - error receiving\n";
+			return;
+		}
+		std::string Recmessage;
+		packet >> Recmessage << "\n";
+		std::cout << Recmessage;
 	}
-	packet.clear();
-	if (socket.receive(packet) != sf::Socket::Done)
-	{
-		std::cerr << "TCP Client - error receiving\n";
-		return;
-	}
-	std::string message;
-	packet >> message << "\n";
-	std::cout << message;
 }
 
 int main()
