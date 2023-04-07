@@ -157,10 +157,12 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="accepter.h" />
+    <ClInclude Include="client.h" />
     <ClInclude Include="clientInfo.h" />
     <ClInclude Include="list.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="receiver.h" />
+    <ClInclude Include="server.h" />
     <ClInclude Include="util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

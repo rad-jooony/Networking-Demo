@@ -4,7 +4,9 @@ class clientinfo
 {
 public:
 	unsigned short id;
-	//clientinfo 
+	// IPaddress
+	// Port
+	// 
 	//TODO fill client info
 
 private:

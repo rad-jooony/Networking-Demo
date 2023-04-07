@@ -56,7 +56,7 @@ struct Car
     }
 };
 
-int Game()
+int game()
 {
     // ****************************************
     // Initialise

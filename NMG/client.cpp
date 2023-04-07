@@ -5,11 +5,11 @@
 #include <iostream>
 #include <thread>
 
-void Cclient()
+void client()
 {
     std::shared_ptr<sf::TcpSocket> socket = std::make_shared<sf::TcpSocket>();
 
-    sf::Socket::Status status = socket->connect(sf::IpAddress::getLocalAddress(), PORT);
+    sf::Socket::Status status = socket->connect(sf::IpAddress::getLocalAddress(), TCP_PORT);
     if (status != sf::Socket::Done) 
     {
         std::cerr << "TCP Client Error connecting";
@@ -23,7 +23,7 @@ void Cclient()
     std::thread recvThread(&Receiver::recv_loop, receiver);
 
    
-    std::string s = "Maybe this is a clue to surviving bluelock????"; // or create a packet
+    std::string s; // or create a packet
     while (1)
     {
         std::getline(std::cin, s);

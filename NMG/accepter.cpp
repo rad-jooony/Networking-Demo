@@ -32,7 +32,7 @@ void Accepter::operator()()//double bracket makes this a function
             return;
         }
         // Now it is able to accept messages
-        socket_.push(socket);
+        socket_.push(socket); //add this socket to the list of sockets
 
         std::stringstream ss;
         ss << "Accepted a connection from: " << socket->getRemoteAddress() << ":" << socket->getRemotePort() << std::endl;
@@ -45,4 +45,3 @@ void Accepter::operator()()//double bracket makes this a function
         std::thread(&Receiver::recv_loop, receiver).detach(); // thread lauches detached, meaning it doesnt need to wait to catch up
     }
 }
-

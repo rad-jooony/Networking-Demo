@@ -16,30 +16,27 @@
     <Filter Include="Header Files\Utility">
       <UniqueIdentifier>{d26299c4-99b6-4219-9eb6-435714adf598}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Source Files\Client-Side">
-      <UniqueIdentifier>{0ddacad6-2848-45cd-aed6-3bc3dc834cdc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Source Files\Server-Side">
-      <UniqueIdentifier>{4eb574f2-4ced-4bd6-a12f-32bd0913eca0}</UniqueIdentifier>
+    <Filter Include="Header Files\ServerClient">
+      <UniqueIdentifier>{f6ad3935-86b9-4b0c-95d3-3e3c37565d74}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="accepter.cpp">
-      <Filter>Source Files\Server-Side</Filter>
-    </ClCompile>
-    <ClCompile Include="server.cpp">
-      <Filter>Source Files\Server-Side</Filter>
-    </ClCompile>
-    <ClCompile Include="client.cpp">
-      <Filter>Source Files\Client-Side</Filter>
-    </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>Source Files\Client-Side</Filter>
-    </ClCompile>
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="receiver.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="client.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="game.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="accepter.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -61,6 +58,12 @@
     </ClInclude>
     <ClInclude Include="clientInfo.h">
       <Filter>Header Files\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="client.h">
+      <Filter>Header Files\ServerClient</Filter>
+    </ClInclude>
+    <ClInclude Include="server.h">
+      <Filter>Header Files\ServerClient</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
