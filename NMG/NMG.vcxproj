@@ -150,8 +150,11 @@
   <ItemGroup>
     <ClCompile Include="accepter.cpp" />
     <ClCompile Include="client.cpp" />
-    <ClCompile Include="game.cpp" />
+    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="oldGame.cpp" />
+    <ClCompile Include="serverClinetpick.cpp" />
+    <ClCompile Include="FrontEnd.cpp" />
     <ClCompile Include="receiver.cpp" />
     <ClCompile Include="server.cpp" />
   </ItemGroup>
@@ -159,7 +162,9 @@
     <ClInclude Include="accepter.h" />
     <ClInclude Include="client.h" />
     <ClInclude Include="clientInfo.h" />
+    <ClInclude Include="Game.h" />
     <ClInclude Include="list.h" />
+    <ClInclude Include="FrontEnd.h" />
     <ClInclude Include="queue.h" />
     <ClInclude Include="receiver.h" />
     <ClInclude Include="server.h" />

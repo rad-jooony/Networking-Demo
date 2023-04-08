@@ -13,57 +13,84 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
-    <Filter Include="Header Files\Utility">
-      <UniqueIdentifier>{d26299c4-99b6-4219-9eb6-435714adf598}</UniqueIdentifier>
+    <Filter Include="Source Files\Multiplayer">
+      <UniqueIdentifier>{8581bbbc-d5ce-4123-84d8-45774b9ddec1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Header Files\ServerClient">
+    <Filter Include="Header Files\Multiplayer">
       <UniqueIdentifier>{f6ad3935-86b9-4b0c-95d3-3e3c37565d74}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Multiplayer\Utility">
+      <UniqueIdentifier>{d26299c4-99b6-4219-9eb6-435714adf598}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{4d958399-80ae-4491-a22a-86907b0d542a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{4e62a2db-f6eb-41eb-9885-720cfb85df36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\NewFilter1">
+      <UniqueIdentifier>{8c52334a-2502-4120-92b1-6cabe55f403a}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="receiver.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="accepter.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
     </ClCompile>
     <ClCompile Include="client.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Multiplayer</Filter>
     </ClCompile>
-    <ClCompile Include="game.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="serverClinetpick.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
     </ClCompile>
-    <ClCompile Include="accepter.cpp">
-      <Filter>Source Files</Filter>
+    <ClCompile Include="receiver.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
     </ClCompile>
     <ClCompile Include="server.cpp">
-      <Filter>Source Files</Filter>
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
+    <ClCompile Include="FrontEnd.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="oldGame.cpp">
+      <Filter>Source Files\NewFilter1</Filter>
+    </ClCompile>
+    <ClCompile Include="Game.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files\Game</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="accepter.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="queue.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="receiver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="util.h">
-      <Filter>Header Files\Utility</Filter>
+      <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
     <ClInclude Include="clientInfo.h">
-      <Filter>Header Files\Utility</Filter>
+      <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
     <ClInclude Include="client.h">
-      <Filter>Header Files\ServerClient</Filter>
+      <Filter>Header Files\Multiplayer</Filter>
     </ClInclude>
     <ClInclude Include="server.h">
-      <Filter>Header Files\ServerClient</Filter>
+      <Filter>Header Files\Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="accepter.h">
+      <Filter>Header Files\Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="list.h">
+      <Filter>Header Files\Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="queue.h">
+      <Filter>Header Files\Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="receiver.h">
+      <Filter>Header Files\Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="FrontEnd.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Game.h">
+      <Filter>Header Files\Game</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
