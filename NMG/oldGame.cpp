@@ -12,8 +12,6 @@
 // Main menu
 // Speed boost power (charge)
 
-
-
 // Points - or Checkpoints - are manually placed in the level. AI cars approach these checkpoints
 // and they are also used to make sure players are driving correctly aswell
 

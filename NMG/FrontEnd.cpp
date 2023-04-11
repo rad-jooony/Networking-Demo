@@ -18,7 +18,6 @@ void FrontEnd::Connect()
 	std::cerr << "connection menu (wip)";
 }
 
-
 //MAIN MENU
 bool FrontEnd::MainWindow(sf::RenderWindow& window)
 {
