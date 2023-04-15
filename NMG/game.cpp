@@ -88,16 +88,26 @@ void Game::Run(sf::RenderWindow& window)
 
 		// Step 3: Render
 		window.clear(sf::Color::White);
-		// TODO: Stay within the limit of the map.
-		// TODO: Don't show white at bottom/right.
-		if (car[localUser].x > 400) 
+		
+		// Camera contained within map
+		if (car[localUser].x > 400)
 			offsetX = car[localUser].x - 400;
 		if (car[localUser].y > 400)
 			offsetY = car[localUser].y - 400;
-		if (car[localUser].x > 2482)
-			offsetX -= car[localUser].x - 2482; ///These values still need tweaking
-		if (car[localUser].y > 3255)
-			offsetY -= car[localUser].y - 3255;
+		if (car[localUser].x > 2480)
+			offsetX -= car[localUser].x - 2480;
+		if (car[localUser].y > 3248)
+			offsetY -= car[localUser].y - 3248;
+		
+		//player doesnt go out of bounds
+		if (car[localUser].x < 20)
+			car[localUser].x = 20;
+		if (car[localUser].y < 20)
+			car[localUser].y = 20;
+		if (car[localUser].x > 2860)
+			car[localUser].x = 2860; 
+		if (car[localUser].y > 3628)
+			car[localUser].y = 3628;
 
 		sBackground.setPosition(-offsetX, -offsetY);
 		window.draw(sBackground);
