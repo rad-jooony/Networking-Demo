@@ -36,7 +36,7 @@ void Game::Run(sf::RenderWindow& window)
 		car[i].speed = 7 + ((float)i / 5); // See if this actually does anything
 	}
 
-	float offsetX = 0, offsetY = 0; // idk what this does
+	float offsetX = 0, offsetY = 0; // Camera position
 
 	// ****************************************
 	// Loop
@@ -90,8 +90,15 @@ void Game::Run(sf::RenderWindow& window)
 		window.clear(sf::Color::White);
 		// TODO: Stay within the limit of the map.
 		// TODO: Don't show white at bottom/right.
-		if (car[localUser].x > 320) offsetX = car[localUser].x - 320;
-		if (car[localUser].y > 240) offsetY = car[localUser].y - 240;
+		if (car[localUser].x > 400) 
+			offsetX = car[localUser].x - 400;
+		if (car[localUser].y > 400)
+			offsetY = car[localUser].y - 400;
+		if (car[localUser].x > 2482)
+			offsetX -= car[localUser].x - 2482; ///These values still need tweaking
+		if (car[localUser].y > 3255)
+			offsetY -= car[localUser].y - 3255;
+
 		sBackground.setPosition(-offsetX, -offsetY);
 		window.draw(sBackground);
 		for (int i = 0; i < Players; i++)
@@ -111,6 +118,18 @@ void Game::Run(sf::RenderWindow& window)
 				window.draw(checkRec);
 
 			}
+
+			sf::Font font;
+			if (!font.loadFromFile("data/unispace bd.ttf"))
+			{
+				std::cout << "ERROR: cannot find font\n";
+				return;
+			}
+			sf::Text text;
+			text.setFont(font);
+			auto X = std::to_string(car[localUser].x) + "  " + std::to_string(car[localUser].y);
+			text.setString(X);
+			window.draw(text);
 		}
 		sf::RectangleShape checkRec(sf::Vector2f(1, 1));
 		checkRec.setPosition(sf::Vector2f(300 - offsetX, 300 - offsetY));
