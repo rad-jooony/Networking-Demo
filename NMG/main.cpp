@@ -1,7 +1,10 @@
 /*
 Networking and Multiplayer Demo
 
-
+Things to note for moving to the Linux machines
+Use Code::Blocks
+SetFillColor is just SetColor
+Remember to include the Font
 
 */
 

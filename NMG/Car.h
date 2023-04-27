@@ -1,5 +1,4 @@
 #pragma once
-#include <corecrt_math.h>
 #include <vector>
 #include <SFML/Graphics.hpp>
 
