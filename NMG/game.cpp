@@ -8,7 +8,6 @@ void Game::Run(sf::RenderWindow& window)
 	// ****************************************
 	// Initialise - Setting seed and Render Window
 	srand(time(NULL));
-	//sf::RenderWindow window(sf::VideoMode(1000, 800), "Car Racing Game!");
 	window.setFramerateLimit(60);
 	sf::Texture tBackground, tCar;
 	tBackground.loadFromFile("images/background.png");
@@ -24,7 +23,7 @@ void Game::Run(sf::RenderWindow& window)
 	const int Players = 5;
 	Car car[Players]; // Make array of 5 cars
 	int localUser{ 0 };
-	// There would need to be a way to figure out what car is the local user's car
+	// There would need to be a way to figure out what car is the local user's car -- Maybe?? idk
 
 	sf::Color colors[5] = { sf::Color::Red, sf::Color::Green, sf::Color::Magenta, sf::Color::Blue, sf::Color::White };
 
@@ -118,7 +117,7 @@ void Game::Run(sf::RenderWindow& window)
 			sCar.setColor(colors[i]);
 			window.draw(sCar);
 		}
-		// DEBUG
+		// DEBUG SECTION
 		if (1)
 		{
 			for (int i = 0; 8 > i; i++)
