@@ -4,7 +4,7 @@
 
 void Game::Run(sf::RenderWindow& window)
 {
-	std::cerr << "balls\n";
+	std::cerr << "the game message\n";
 	// ****************************************
 	// Initialise - Setting seed and Render Window
 	srand(time(NULL));
