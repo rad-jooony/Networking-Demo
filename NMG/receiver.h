@@ -4,6 +4,8 @@
 // Reciever thread gets information from other players.
 // It does this in a loop. 
 
+// both TCP and UDP need a receiver so this is its own file
+
 #include "queue.h"
 #include <SFML/Network.hpp>
 

@@ -7,7 +7,7 @@ class Game
 public:
 
 	const int num = 8; //checkpoints
-	std::vector<sf::Vector2f> points
+	std::vector<sf::Vector2f> points //checkpoint locations
 	{
 		sf::Vector2f(300, 610),
 		sf::Vector2f(1270,430),
@@ -19,5 +19,4 @@ public:
 		sf::Vector2f(500, 3300) };
 	
 	void Run(sf::RenderWindow& window);
-
 };

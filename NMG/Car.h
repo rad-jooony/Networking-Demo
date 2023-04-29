@@ -5,9 +5,9 @@
 class Car
 {
 	float _acc, _dec, _turnSpeed, // mostly non-changing values
-		_maxSpeed; // Can change when boosting
-	sf::Color _colour; //maybe make colour customisable?
-	bool _ai = false;
+		_maxSpeed; // Can change when boosting as a mechanic maybe?
+	sf::Color _colour; //maybe make colour customisable when the user joins the game
+	bool _ai = false; // i might not need this if the player is in direct control of the car
 public:
 
 	int n; //Current checkpoint

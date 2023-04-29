@@ -1,9 +1,7 @@
-#include "queue.h"
-#include "receiver.h"
-#include "util.h"
-#include <SFML/Network.hpp>
 #include <iostream>
 #include <thread>
+#include "Receiver.h"
+#include "Util.h"
 
 void client()
 {
@@ -21,7 +19,6 @@ void client()
     
     std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue); //launch a receiver thread to receive messages from the server.
     std::thread recvThread(&Receiver::recv_loop, receiver);
-
    
     std::string s; // or create a packet
     while (1)

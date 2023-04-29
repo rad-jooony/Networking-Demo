@@ -1,9 +1,10 @@
 #pragma once 
 #include <list>
-#include "util.h"
-#include "queue.h"
-#include "list.h"
+#include "Util.h"
 
+
+// since the UDP server does not need an accepter, 
+// I can create the accepter class here
 class Accepter {
 private:
     Queue<std::string>& queue_;
@@ -14,4 +15,4 @@ public:
     void operator()();
 };
 
-void server();
+void TCPserver();

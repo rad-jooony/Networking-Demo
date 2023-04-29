@@ -1,10 +1,6 @@
 #include "receiver.h"
 #include "util.h"
-#include <chrono>
-#include <cstring>
 #include <iostream>
-#include <iostream>
-#include <sstream>
 #include <thread>
 
 // Part of the TCP Socket. Recives messages. Used by both Client and Server (i think)

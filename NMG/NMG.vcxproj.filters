@@ -33,19 +33,13 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="accepter.cpp">
+    <ClCompile Include="Client.cpp">
       <Filter>Source Files\Multiplayer</Filter>
     </ClCompile>
-    <ClCompile Include="client.cpp">
+    <ClCompile Include="Receiver.cpp">
       <Filter>Source Files\Multiplayer</Filter>
     </ClCompile>
-    <ClCompile Include="serverClinetpick.cpp">
-      <Filter>Source Files\Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="receiver.cpp">
-      <Filter>Source Files\Multiplayer</Filter>
-    </ClCompile>
-    <ClCompile Include="server.cpp">
+    <ClCompile Include="TCPserver.cpp">
       <Filter>Source Files\Multiplayer</Filter>
     </ClCompile>
     <ClCompile Include="FrontEnd.cpp">
@@ -57,33 +51,24 @@
     <ClCompile Include="Game.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
-    <ClCompile Include="main.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
     <ClCompile Include="Car.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="util.h">
+    <ClInclude Include="Util.h">
       <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="clientInfo.h">
+    <ClInclude Include="ClientInfo.h">
       <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
     <ClInclude Include="client.h">
       <Filter>Header Files\Multiplayer</Filter>
     </ClInclude>
-    <ClInclude Include="server.h">
-      <Filter>Header Files\Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="accepter.h">
-      <Filter>Header Files\Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="list.h">
-      <Filter>Header Files\Multiplayer</Filter>
-    </ClInclude>
-    <ClInclude Include="queue.h">
+    <ClInclude Include="TCPserver.h">
       <Filter>Header Files\Multiplayer</Filter>
     </ClInclude>
     <ClInclude Include="receiver.h">
@@ -97,6 +82,12 @@
     </ClInclude>
     <ClInclude Include="Car.h">
       <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="Queue.h">
+      <Filter>Header Files\Multiplayer\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="List.h">
+      <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
