@@ -6,7 +6,6 @@
 #include <list>
 #include <mutex>
 
-
 template <typename T>
 class List
 {
@@ -31,5 +30,4 @@ class List
         std::list<T> list_;
         std::mutex mutex_;
 };
-
 #endif

@@ -11,8 +11,9 @@ Remember to include the Font
 #include "FrontEnd.h"
 
 
-int main()
+int other()
 {
+
 	srand((unsigned)time(NULL));
 	FrontEnd MyGame;
 	MyGame.Run();

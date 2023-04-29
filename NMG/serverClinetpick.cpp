@@ -22,7 +22,7 @@
 	else spawn a server, wait a bit then connect
 */
 
-int other()
+int main()
 {
 	while (1)
 	{

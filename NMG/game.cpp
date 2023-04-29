@@ -103,7 +103,7 @@ void Game::Run(sf::RenderWindow& window)
 			car[localUser].x = 20;
 		if (car[localUser].y < 20)
 			car[localUser].y = 20;
-		if (car[localUser].x > 2860)
+		if (car[localUser].x > 2860) // vals to change based on screen size is possible
 			car[localUser].x = 2860; 
 		if (car[localUser].y > 3628)
 			car[localUser].y = 3628;
@@ -117,6 +117,11 @@ void Game::Run(sf::RenderWindow& window)
 			sCar.setColor(colors[i]);
 			window.draw(sCar);
 		}
+
+		// send server
+
+		// recieve server
+
 		// DEBUG SECTION
 		if (1)
 		{
