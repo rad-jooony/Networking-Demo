@@ -19,6 +19,8 @@ public:
 	void Move(); // Car move, includes turning etc.
 	void FindTarget(std::vector<sf::Vector2f> points); //For AI cars
 	
+	std::string name; // for player names
+
 	// These are public for ease of use. 
 	float x, y, // Position in world
 		speed, angle;// Movement speed and angle

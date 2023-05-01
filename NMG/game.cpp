@@ -2,26 +2,44 @@
 #include "Car.h"
 #include <iostream>
 
+#include <thread>
+#include "Receiver.h"
+#include "Util.h"
+#include "ClientInfo.h"
+
 void Game::Run(sf::RenderWindow& window)
 {
 	std::cerr << "the game message\n";
 	// ****************************************
-	// Initialise - Setting seed and Render Window
+	// Initialise
 	srand(time(NULL));
 	window.setFramerateLimit(60);
+	
+	// NETWORKING (CLIENT ESTABLISHMENT)
+	std::shared_ptr<sf::TcpSocket> socket = std::make_shared<sf::TcpSocket>();
+	sf::Socket::Status status = socket->connect(sf::IpAddress::getLocalAddress(), TCP_PORT);
+	if (status != sf::Socket::Done)
+	{
+		std::cerr << "TCP Client Error connecting";
+		return;
+	}
+	std::cout << "Connected\n";
+	Queue<std::string> queue;
+	std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue); //launch a receiver thread to receive messages from the server.
+	std::thread recvThread(&Receiver::recv_loop, receiver);
+
+	// GAME INITIALISATION
 	sf::Texture tBackground, tCar;
 	tBackground.loadFromFile("images/background.png");
 	tCar.loadFromFile("images/car.png");
-
 	tBackground.setSmooth(true);
 	tCar.setSmooth(true);
-
 	sf::Sprite sBackground(tBackground), sCar(tCar);
 	sBackground.scale(2, 2);
 	sCar.setOrigin(22, 22); // centre of cars sprite
 	float CollisionVal = 22; // used for collision checks, value dictates the box size
 	const int Players = 5;
-	Car car[Players]; // Make array of 5 cars
+	Car car[Players]; 
 	int localUser{ 0 };
 	// There would need to be a way to figure out what car is the local user's car -- Maybe?? idk
 
@@ -148,9 +166,16 @@ void Game::Run(sf::RenderWindow& window)
 		sf::RectangleShape checkRec(sf::Vector2f(1, 1));
 		checkRec.setPosition(sf::Vector2f(300 - offsetX, 300 - offsetY));
 		window.draw(checkRec);
-
-
 		window.display();
+
+
+		sf::Packet pack;
+		if (1)
+		{
+			//send to server
+		}
+		//somehow recieve from server too
 	}
+	recvThread.join();
 	return;
 }
