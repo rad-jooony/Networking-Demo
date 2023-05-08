@@ -10,7 +10,7 @@ private:
 
 public:
 	void Run(); //Runs the game
-	void Connect(); // launches a connection menu (WIP)
+	unsigned short Connect(sf::RenderWindow& window); // launches a connection menu
 	bool MainWindow(sf::RenderWindow& window); //Runs the main menu
 };
 

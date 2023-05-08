@@ -1,5 +1,4 @@
-#ifndef RECEIVER_HPP
-#define RECEIVER_HPP
+#pragma once
 
 // Reciever thread gets information from other players.
 // It does this in a loop. 
@@ -11,10 +10,10 @@
 
 class Receiver {
     public:
-        Receiver(std::shared_ptr<sf::TcpSocket> s, Queue<std::string>& queue);
-        void recv_loop();
+        Receiver(std::shared_ptr<sf::TcpSocket> s, Queue<sf::Packet>& queue);
+        void recvLoop();
+        sf::Packet getPacket() { return _queue.pop(); }
     private:
-        std::shared_ptr<sf::TcpSocket> socket_;
-        Queue<std::string> &queue_;
+        std::shared_ptr<sf::TcpSocket> _socket;
+        Queue<sf::Packet> &_queue;
 };
-#endif

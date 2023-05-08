@@ -1,5 +1,4 @@
-#ifndef QUEUE_HPP
-#define QUEUE_HPP
+#pragma once
 
 #include <condition_variable>
 #include <mutex>
@@ -9,40 +8,39 @@ template <typename T>
 class Queue
 {
     public:
-        T pop() // Blocking pop
+        T pop() // Blocking pop. Wait until an item is in the queue
         {
-            std::unique_lock<std::mutex> mlock(mutex_);
-            cond_.wait(mlock, [this]{return !queue_.empty();});
-            auto val = queue_.front();
-            queue_.pop();
+            std::unique_lock<std::mutex> mlock(_mutex);
+            _cond.wait(mlock, [this]{return !_queue.empty();});
+            auto val = _queue.front();
+            _queue.pop();
             return val;
         }
 
         void pop(T& item) // pop will not wait with an empty queue
         {
-            std::unique_lock<std::mutex> mlock(mutex_);
-            if (queue_.empty())
+            std::unique_lock<std::mutex> mlock(_mutex);
+            if (_queue.empty())
             {
                 return;
             }
-            item = queue_.front();
-            queue_.pop();
+            item = _queue.front();
+            _queue.pop();
         }
 
-        void push(const T& item)
+        void push(const T& item) // push an item to the back of the queue
         {
-            std::unique_lock<std::mutex> mlock(mutex_);
-            queue_.push(item);
-            cond_.notify_one();
+            std::unique_lock<std::mutex> mlock(_mutex);
+            _queue.push(item);
+            _cond.notify_one();
         }
-        Queue()=default;
+
+        Queue() {};
         Queue(const Queue&) = delete;            // disable copying
         Queue& operator=(const Queue&) = delete; // disable assignment
 
     private:
-        std::queue<T> queue_;
-        std::mutex mutex_;
-        std::condition_variable cond_;
+        std::queue<T> _queue;
+        std::mutex _mutex;
+        std::condition_variable _cond;
 };
-
-#endif

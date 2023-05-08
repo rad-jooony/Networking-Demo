@@ -1,5 +1,4 @@
-#ifndef LIST_HPP
-#define LIST_HPP
+#pragma once
 
 #include <algorithm>
 #include <functional>
@@ -10,19 +9,18 @@ template <typename T>
 class List
 {
     public:
-        void for_each(std::function<void(T)> f)
+        void for_each(std::function<void(T)> function) //Apply a function to each in a loop
         {
             std::unique_lock<std::mutex> mlock(mutex_);
-            std::for_each(list_.begin(), list_.end(), f);
+            std::for_each(list_.begin(), list_.end(), function);
         }
 
-        void push(const T& item)
+        void push(const T& item) // adds a new item to the end of the list
         {
             std::unique_lock<std::mutex> mlock(mutex_);
             list_.push_back(item);
         }
-
-        List()=default;
+        List() {};
         List(const List&) = delete;            // disable copying
         List& operator=(const List&) = delete; // disable assignment
 
@@ -30,4 +28,3 @@ class List
         std::list<T> list_;
         std::mutex mutex_;
 };
-#endif

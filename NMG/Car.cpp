@@ -9,7 +9,7 @@ void Car::Update()
 	// xy +-= sincos(angle) * speed * 0.5
 }
 
-void Car::FindTarget(std::vector<sf::Vector2f> points) //
+void Car::FindTarget(std::vector<sf::Vector2f> points) // if AI
 {
 	float tx = points[n].x;
 	float ty = points[n].y;

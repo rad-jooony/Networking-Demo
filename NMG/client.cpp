@@ -15,10 +15,10 @@ void client()
     }
     std::cout << "Connected\n";
 
-    Queue<std::string> queue;
+    Queue<sf::Packet> queue;
     
     std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue); //launch a receiver thread to receive messages from the server.
-    std::thread recvThread(&Receiver::recv_loop, receiver);
+    std::thread recvThread(&Receiver::recvLoop, receiver);
    
     std::string s; // or create a packet
     while (1)

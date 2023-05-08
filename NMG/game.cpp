@@ -9,12 +9,9 @@
 
 void Game::Run(sf::RenderWindow& window)
 {
-	std::cerr << "the game message\n";
-	// ****************************************
-	// Initialise
 	srand(time(NULL));
 	window.setFramerateLimit(60);
-	
+
 	// NETWORKING (CLIENT ESTABLISHMENT)
 	std::shared_ptr<sf::TcpSocket> socket = std::make_shared<sf::TcpSocket>();
 	sf::Socket::Status status = socket->connect(sf::IpAddress::getLocalAddress(), TCP_PORT);
@@ -23,10 +20,16 @@ void Game::Run(sf::RenderWindow& window)
 		std::cerr << "TCP Client Error connecting";
 		return;
 	}
-	std::cout << "Connected\n";
-	Queue<std::string> queue;
+	std::cout << "Client Connected\n";
+	Queue<sf::Packet> queue;
 	std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue); //launch a receiver thread to receive messages from the server.
-	std::thread recvThread(&Receiver::recv_loop, receiver);
+	std::thread recvThread(&Receiver::recvLoop, receiver);
+
+	
+	// GET INFO FROM SERVER // This will be the player's ID
+	receiver->getPacket();
+
+	int localUser{ 0 };
 
 	// GAME INITIALISATION
 	sf::Texture tBackground, tCar;
@@ -36,21 +39,35 @@ void Game::Run(sf::RenderWindow& window)
 	tCar.setSmooth(true);
 	sf::Sprite sBackground(tBackground), sCar(tCar);
 	sBackground.scale(2, 2);
+	sf::Font font;
+	if (!font.loadFromFile("data/unispace bd.ttf"))
+	{
+		std::cout << "ERROR: cannot find font\n";
+		return;
+	}
+	sf::Text playerName;
+	playerName.setFont(font);
+	playerName.setCharacterSize(15);
+	playerName.setOutlineThickness(3);
 	sCar.setOrigin(22, 22); // centre of cars sprite
-	float CollisionVal = 22; // used for collision checks, value dictates the box size
-	const int Players = 5;
-	Car car[Players]; 
-	int localUser{ 0 };
+	float collisionVal = 22; // used for collision checks, value dictates the box size
+	const int players = 2;
+	std::vector<Car> car(players, Car{});
+
+	for (int i = 0; i < car.size(); i++)
+	{
+		car[i].name = Game::names[i];
+	}
 	// There would need to be a way to figure out what car is the local user's car -- Maybe?? idk
 
 	sf::Color colors[5] = { sf::Color::Red, sf::Color::Green, sf::Color::Magenta, sf::Color::Blue, sf::Color::White };
 
 	// Starting positions
-	for (int i = 0; i < Players; i++)
+	for (int i = 0; i < players; i++)
 	{
 		car[i].x = (300 + i * 50);
 		car[i].y = (1700 + i * 80);
-		car[i].speed = 7 + ((float)i / 5); // See if this actually does anything
+		car[i].speed = 7 + ((float)i / 5);
 	}
 
 	float offsetX = 0, offsetY = 0; // Camera position
@@ -77,20 +94,26 @@ void Game::Run(sf::RenderWindow& window)
 		// Step 2: update
 		//car movement
 		car[localUser].Move();
-		for (int i = 1; i < Players; i++) car[i].FindTarget(Game::points);
-		for (int i = 0; i < Players; i++) car[i].Update();
 
-		//collision
-		for (int i = 0; i < Players; i++)
+		for (int i = 0; i < players; i++)
 		{
-			for (int j = 0; j < Players; j++)
+			if (car[i].isAI())
+			{
+				car[i].FindTarget(Game::points);
+			}
+			car[i].Update();
+		}
+		//collision
+		for (int i = 0; i < players; i++)
+		{
+			for (int j = 0; j < players; j++)
 			{
 				if (i == j)
 				{
 					break;
 				}
 				int dx = 0, dy = 0;
-				while (dx * dx + dy * dy < 4 * CollisionVal * CollisionVal)
+				while (dx * dx + dy * dy < 4 * collisionVal * collisionVal)
 				{
 					car[i].x += dx / 10.0;
 					car[i].x += dy / 10.0;
@@ -105,7 +128,7 @@ void Game::Run(sf::RenderWindow& window)
 
 		// Step 3: Render
 		window.clear(sf::Color::White);
-		
+
 		// Camera contained within map
 		if (car[localUser].x > 400)
 			offsetX = car[localUser].x - 400;
@@ -115,25 +138,29 @@ void Game::Run(sf::RenderWindow& window)
 			offsetX -= car[localUser].x - 2480;
 		if (car[localUser].y > 3248)
 			offsetY -= car[localUser].y - 3248;
-		
+
 		//player doesnt go out of bounds
 		if (car[localUser].x < 20)
 			car[localUser].x = 20;
 		if (car[localUser].y < 20)
 			car[localUser].y = 20;
 		if (car[localUser].x > 2860) // vals to change based on screen size is possible
-			car[localUser].x = 2860; 
+			car[localUser].x = 2860;
 		if (car[localUser].y > 3628)
 			car[localUser].y = 3628;
 
 		sBackground.setPosition(-offsetX, -offsetY);
 		window.draw(sBackground);
-		for (int i = 0; i < Players; i++)
+		for (int i = 0; i < players; i++)
 		{
 			sCar.setPosition(car[i].x - offsetX, car[i].y - offsetY);
 			sCar.setRotation(car[i].angle * 180 / 3.141593);
 			sCar.setColor(colors[i]);
 			window.draw(sCar);
+			playerName.setString(car[i].name);
+			playerName.setPosition(car[i].x - offsetX - 20, car[i].y - offsetY + 25);
+			window.draw(playerName);
+
 		}
 
 		// send server
@@ -143,31 +170,10 @@ void Game::Run(sf::RenderWindow& window)
 		// DEBUG SECTION
 		if (1)
 		{
-			for (int i = 0; 8 > i; i++)
-			{
-				sf::RectangleShape checkRec(sf::Vector2f(10, 10));
-				checkRec.setPosition(sf::Vector2f(points[i].x - offsetX, points[i].y - offsetY));
-				window.draw(checkRec);
 
-			}
-
-			sf::Font font;
-			if (!font.loadFromFile("data/unispace bd.ttf"))
-			{
-				std::cout << "ERROR: cannot find font\n";
-				return;
-			}
-			sf::Text text;
-			text.setFont(font);
-			auto X = std::to_string(car[localUser].x) + "  " + std::to_string(car[localUser].y);
-			text.setString(X);
-			window.draw(text);
 		}
-		sf::RectangleShape checkRec(sf::Vector2f(1, 1));
-		checkRec.setPosition(sf::Vector2f(300 - offsetX, 300 - offsetY));
-		window.draw(checkRec);
-		window.display();
 
+		window.display();
 
 		sf::Packet pack;
 		if (1)

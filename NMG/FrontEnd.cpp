@@ -1,6 +1,10 @@
 #include "FrontEnd.h"
+#include "TCPserver.h"
 #include "Game.h"
 #include <iostream>
+#include <SFML/Network.hpp>
+#include <chrono>
+#include <thread>
 
 void FrontEnd::Run()
 {
@@ -11,11 +15,6 @@ void FrontEnd::Run()
 		Game game;
 		game.Run(window);
 	}
-}
-
-void FrontEnd::Connect()
-{
-	std::cerr << "connection menu (wip)";
 }
 
 //MAIN MENU
@@ -76,13 +75,23 @@ bool FrontEnd::MainWindow(sf::RenderWindow& window)
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
 		{
 			if (selectedOption == 0)
+			{
+				std::thread TCPserverThread(&TCPserver);
+				TCPserverThread.detach();
 				return true;
+			}
 			if (selectedOption == 1)
-				Connect();
+				if (Connect(window))
+				{
+					return true;
+				}
 			if (selectedOption == 2)
 				return false;
 		}
-
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+		{
+			return false;
+		}
 
 		sf::Vector2f pos{ 20,100 };
 		text.setCharacterSize(20);
@@ -117,4 +126,72 @@ bool FrontEnd::MainWindow(sf::RenderWindow& window)
 		window.display();
 	}
 	return false;
+}
+
+unsigned short FrontEnd::Connect(sf::RenderWindow& window) // This is the connection menu logic
+{
+	sf::Font font;
+	if (!font.loadFromFile("data/unispace bd.ttf"))
+	{
+		std::cout << "ERROR: cannot find font\n";
+		return 0;
+	}
+	sf::Text inputText("", font, 20);
+	inputText.setPosition(20, 100);
+	std::string inputString;
+
+	sf::Text message("", font, 20);
+	message.setPosition(20, 300);
+	bool errorMessage{ 0 };
+
+	while (1)
+	{
+		sf::Event event;
+		while (window.pollEvent(event)) {
+			if (event.type == sf::Event::TextEntered)
+			{
+				if (std::isdigit(event.text.unicode) && inputString.size() < 5)
+				{
+					inputString += static_cast<char>(event.text.unicode); //static_cast<char> converts the unicode to a char
+					inputText.setString(inputString);
+				}
+			}
+			if (event.type == sf::Event::KeyPressed)
+			{
+				if (event.key.code == sf::Keyboard::Backspace && !inputString.empty())
+				{
+					inputString.erase(inputString.size() - 1);
+					inputText.setString(inputString);
+				}
+				if (event.key.code == sf::Keyboard::Escape)
+				{
+					return 0;
+				}
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::Enter))
+			{
+				window.clear();
+				errorMessage = 1;
+				message.setString("Connecting...");
+				window.draw(message);
+				window.display();
+				sf::TcpSocket testSocket;
+				if (testSocket.connect(sf::IpAddress::getLocalAddress(), 4301) != sf::Socket::Done) // Test. This will be replaced with InputText
+				{
+					message.setString("Can't Connect. Server may be offline");
+					break;
+				}
+				message.setString("Connection accepted");
+				std::this_thread::sleep_for(std::chrono::seconds(1));
+				return 4301;
+			}
+
+			window.clear();
+			window.draw(inputText);
+			if (errorMessage)
+				window.draw(message);
+			window.display();
+		}
+	}
 }

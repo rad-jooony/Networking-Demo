@@ -7,11 +7,11 @@
 // I can create the accepter class here
 class Accepter {
 private:
-    Queue<std::string>& queue_;
-    List<std::shared_ptr<sf::TcpSocket>>& socket_;
+    Queue<sf::Packet>& _queue;
+    List<std::shared_ptr<sf::TcpSocket>>& _socket;
 
 public:
-    Accepter(Queue<std::string>& q, List<std::shared_ptr<sf::TcpSocket>>& s);
+    Accepter(Queue<sf::Packet>& q, List<std::shared_ptr<sf::TcpSocket>>& s);
     void operator()();
 };
 
