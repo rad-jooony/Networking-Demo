@@ -27,7 +27,7 @@ void Game::Run(sf::RenderWindow& window)
 
 	
 	// GET INFO FROM SERVER // This will be the player's ID
-	receiver->getPacket();
+
 
 	int localUser{ 0 };
 

@@ -20,6 +20,12 @@ class List
             std::unique_lock<std::mutex> mlock(mutex_);
             list_.push_back(item);
         }
+
+        unsigned int size()
+        {
+            return list_.size();
+        }
+
         List() {};
         List(const List&) = delete;            // disable copying
         List& operator=(const List&) = delete; // disable assignment

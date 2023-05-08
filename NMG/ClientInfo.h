@@ -9,11 +9,21 @@ class ClientInfo
 public:
 	unsigned short id; // This will be the player's car number
 	std::string username;
-	sf::IpAddress IP;
-	unsigned short port;
 
 	float x,
 		y,
 		speed,
 		angle; // car info
+
+	friend sf::Packet& operator<<(sf::Packet& packet, const ClientInfo& client)
+	{
+		packet << client.id;
+		packet << client.username;
+		packet << client.x;
+		packet << client.y;
+		packet << client.speed;
+		packet << client.angle;
+		
+		return packet;
+	}
 };

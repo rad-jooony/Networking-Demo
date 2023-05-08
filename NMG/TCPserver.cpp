@@ -3,6 +3,7 @@
 #include "util.h"
 #include <iostream>
 #include <thread>
+#include "ClientInfo.h"
 
 Accepter::Accepter(Queue<sf::Packet>& q, List<std::shared_ptr<sf::TcpSocket>>& s) :
 	_queue(q),
@@ -28,11 +29,18 @@ void Accepter::operator()()//double bracket makes this a function
 			return;
 		}
 		// Now it is able to accept messages
+
+		/// SEND  CLIENT INFO TO THIS PORT FOR SETUP
+		ClientInfo newClient;
+		newClient.id = _socket.size();
+		sf::Packet pack;
+		pack << newClient;
+		socket->send(pack.getData(), pack.getDataSize());
+
 		_socket.push(socket); //add this socket to the list of sockets
 
-		std::stringstream ss;
-		ss << "Accepted a connection from: " << socket->getRemoteAddress() << ":" << socket->getRemotePort() << std::endl;
-		std::cout << ss.str();
+
+		std::cout << "Accepted a connection from: " << socket->getRemoteAddress() << ":" << socket->getRemotePort() << std::endl;
 
 		std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, _queue);
 		// launch a thread to receive with the receiver
