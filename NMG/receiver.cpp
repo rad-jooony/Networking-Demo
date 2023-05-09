@@ -16,7 +16,7 @@ void Receiver::recvLoop()
     char buffer[256];
     {
         std::stringstream ss;
-        ss << "RECIEVER INFO :: " << _socket->getRemoteAddress() << ":" << _socket->getRemotePort() << std::endl;
+        ss << "Receiver :: " << _socket->getRemoteAddress() << ":" << _socket->getRemotePort() << std::endl;
         std::cout << ss.str();
     }
     while(1)
@@ -24,7 +24,6 @@ void Receiver::recvLoop()
         std::memset(buffer, 0, 256);
         std::size_t received;
 
-        
         auto status = _socket->receive(buffer, 256, received); //receive a message here
         if (status == sf::Socket::Done)
         {
@@ -36,7 +35,6 @@ void Receiver::recvLoop()
                 std::cout << "Received: \"" << buffer << "\", " << received << " bytes." << std::endl;
                 std::cout << ss.str();
             }
-            std::cout << "QUEUE HAS RECIVED THE INFO\n";
             _queue.push(receivedPacket);
         }
         else if (status == sf::Socket::Disconnected)

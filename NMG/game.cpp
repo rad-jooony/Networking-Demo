@@ -12,7 +12,7 @@ void Game::Run(sf::RenderWindow& window)
 	srand(time(NULL));
 	window.setFramerateLimit(60);
 
-	// NETWORKING (CLIENT ESTABLISHMENT)
+	// NETWORKING (CLIENT ESTABLISHMENT WITH TCP SERVER)
 	std::shared_ptr<sf::TcpSocket> socket = std::make_shared<sf::TcpSocket>();
 	sf::Socket::Status status = socket->connect(sf::IpAddress::getLocalAddress(), TCP_PORT);
 	if (status != sf::Socket::Done)
@@ -20,7 +20,7 @@ void Game::Run(sf::RenderWindow& window)
 		std::cerr << "TCP Client Error connecting";
 		return;
 	}
-	std::cout << "Client Connected\n";
+	std::cout << "Client Connected to TCP\n";
 	Queue<sf::Packet> queue;
 	std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue); //launch a receiver thread to receive messages from the server.
 	std::thread recvThread(&Receiver::recvLoop, receiver);

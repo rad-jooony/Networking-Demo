@@ -1,3 +1,3 @@
 #pragma once
 
-void client(); // this might eventually just be the game
+void client(); // No longer used, being kept for reference

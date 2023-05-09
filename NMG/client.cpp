@@ -3,7 +3,7 @@
 #include "Receiver.h"
 #include "Util.h"
 
-void client()
+void client() // No longer used, being kept for reference
 {
     std::shared_ptr<sf::TcpSocket> socket = std::make_shared<sf::TcpSocket>();
 
@@ -13,7 +13,7 @@ void client()
         std::cerr << "TCP Client Error connecting";
         return;
     }
-    std::cout << "Connected\n";
+    std::cout << "TCP Client Connected\n";
 
     Queue<sf::Packet> queue;
     
@@ -24,7 +24,7 @@ void client()
     while (1)
     {
         std::getline(std::cin, s);
-        std::cout << "Sending: \"" << s << "\"" << std::endl;
+        std::cout << "TCP Sending: \"" << s << "\"" << std::endl;
         
         socket->send(s.c_str(), s.size()); // send messages to the server
         // TODO check that this works

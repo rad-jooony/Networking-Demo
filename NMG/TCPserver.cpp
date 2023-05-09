@@ -33,7 +33,7 @@ void Accepter::operator()()//double bracket makes this a function
 		_socket.push(socket); //add this socket to the list of sockets
 
 		std::stringstream ss;
-		std::cout << "Accepted a connection from: " << socket->getRemoteAddress() << ":" << socket->getRemotePort() << std::endl;
+		ss << "TCP Accepted a connection from: " << socket->getRemoteAddress() << ":" << socket->getRemotePort() << std::endl;
 		std::cout << ss.str();
 
 		std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, _queue);
@@ -43,18 +43,17 @@ void Accepter::operator()()//double bracket makes this a function
 		/// SEND  CLIENT INFO TO THIS PORT FOR SETUP
 		ClientInfo newClient;
 		newClient.id = _socket.size() - 1; //The number of sockets connected
-		newClient.printInfo();
 		sf::Packet pack;
 		pack << newClient;
-		std::cout << "CLIENTS CONNECTED " << _socket.size() << "\n";
+		std::cout << "TCP clients" << _socket.size() << "\n";
 		socket->send(pack.getData(), pack.getDataSize());
 	}
 }
 
 
-void TCPserver()
+void TCPserver() 
 {
-	std::cout << "launching Server\n";
+	std::cout << "launching TCPServer\n";
 	Queue<sf::Packet> queue;
 	List<std::shared_ptr<sf::TcpSocket>> sockets;
 
@@ -64,8 +63,9 @@ void TCPserver()
 	{
 		sf::Packet pack;
 		pack << queue.pop();
-		std::cout << "Server read: \"" << pack << "\"\n";
-
+		std::stringstream ss;
+		std::cout << "TCP Server read: \"" << pack << "\"\n";
+		std::cout << ss.str();
 		auto send_to_one = [&pack](std::shared_ptr<sf::TcpSocket> socket)
 		{
 			socket->send(pack.getData(), pack.getDataSize());

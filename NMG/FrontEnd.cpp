@@ -1,5 +1,6 @@
 #include "FrontEnd.h"
 #include "TCPserver.h"
+#include "UDPserver.h"
 #include "Game.h"
 #include <iostream>
 #include <SFML/Network.hpp>
@@ -8,7 +9,7 @@
 
 void FrontEnd::Run()
 {
-	sf::RenderWindow window(sf::VideoMode(800, 800), "Cars! The GAME?!?! WOWOWEEE!!");
+	sf::RenderWindow window(sf::VideoMode(800, 800), "Cars Multiplayer game");
 
 	while (MainWindow(window)) //This acts as the main menu. 
 	{
@@ -63,7 +64,7 @@ bool FrontEnd::MainWindow(sf::RenderWindow& window)
 			if (selectedOption > 0)
 				selectedOption--;
 		}
-		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !keypress) // select down
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down) && !keypress) // Select down
 		{
 			keypress = true;
 			if (selectedOption < choices.size() - 1)
@@ -78,6 +79,8 @@ bool FrontEnd::MainWindow(sf::RenderWindow& window)
 			{
 				std::thread TCPserverThread(&TCPserver);
 				TCPserverThread.detach();
+				std::thread UDPserverThread(&UDPserver);
+				UDPserverThread.detach();
 				return true;
 			}
 			if (selectedOption == 1)
@@ -176,13 +179,16 @@ unsigned short FrontEnd::Connect(sf::RenderWindow& window) // This is the connec
 				message.setString("Connecting...");
 				window.draw(message);
 				window.display();
-				sf::TcpSocket testSocket;
-				if (testSocket.connect(sf::IpAddress::getLocalAddress(), 4301) != sf::Socket::Done) // Test. This will be replaced with InputText
-				{
-					message.setString("Can't Connect. Server may be offline");
-					break;
-				}
+				//sf::TcpSocket testSocket;
+				//sf::Socket::Status status = testSocket.connect(sf::IpAddress::getLocalAddress(), 4301)); // I wont check this unitl i can delete connection from the TCPserver list
+				//if (status != sf::Socket::Done)
+				//{
+				//	message.setString("Can't Connect. Server may be offline");
+				//	break;
+				//}
 				message.setString("Connection accepted");
+				window.draw(message);
+				window.display();
 				std::this_thread::sleep_for(std::chrono::seconds(1));
 				return 4301;
 			}

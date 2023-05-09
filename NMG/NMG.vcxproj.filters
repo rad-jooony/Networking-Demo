@@ -57,6 +57,9 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="UDPserver.cpp">
+      <Filter>Source Files\Multiplayer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Util.h">
@@ -65,13 +68,13 @@
     <ClInclude Include="ClientInfo.h">
       <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
-    <ClInclude Include="client.h">
+    <ClInclude Include="Client.h">
       <Filter>Header Files\Multiplayer</Filter>
     </ClInclude>
     <ClInclude Include="TCPserver.h">
       <Filter>Header Files\Multiplayer</Filter>
     </ClInclude>
-    <ClInclude Include="receiver.h">
+    <ClInclude Include="Receiver.h">
       <Filter>Header Files\Multiplayer</Filter>
     </ClInclude>
     <ClInclude Include="FrontEnd.h">
@@ -87,6 +90,12 @@
       <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
     <ClInclude Include="List.h">
+      <Filter>Header Files\Multiplayer\Utility</Filter>
+    </ClInclude>
+    <ClInclude Include="UDPserver.h">
+      <Filter>Header Files\Multiplayer</Filter>
+    </ClInclude>
+    <ClInclude Include="Map.h">
       <Filter>Header Files\Multiplayer\Utility</Filter>
     </ClInclude>
   </ItemGroup>
