@@ -11,6 +11,11 @@ Receiver::Receiver(std::shared_ptr<sf::TcpSocket> s,
     _queue(q)
 {}
 
+sf::Packet transferPacket(Queue<sf::Packet>& q) //hands the packet information and pops the queue
+{
+    return q.pop();
+}
+
 void Receiver::recvLoop()
 {
     char buffer[256];
@@ -36,4 +41,3 @@ void Receiver::recvLoop()
         _queue.push(pack);
     }
 }
-

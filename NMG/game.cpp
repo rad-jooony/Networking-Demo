@@ -25,8 +25,8 @@ void Game::Run(sf::RenderWindow& window)
 	std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, queue); //launch a receiver thread to receive messages from the server.
 	std::thread recvThread(&Receiver::recvLoop, receiver);
 
-	
 	// GET INFO FROM SERVER // This will be the player's ID
+	recvThread
 
 
 	int localUser{ 0 };

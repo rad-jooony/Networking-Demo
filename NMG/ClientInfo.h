@@ -15,7 +15,7 @@ public:
 		speed,
 		angle; // car info
 
-	friend sf::Packet& operator<<(sf::Packet& packet, const ClientInfo& client)
+	friend sf::Packet& operator<<(sf::Packet& packet, const ClientInfo& client) // overide the << function for packets for ClientInfo
 	{
 		packet << client.id;
 		packet << client.username;
