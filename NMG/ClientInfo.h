@@ -23,7 +23,29 @@ public:
 		packet << client.y;
 		packet << client.speed;
 		packet << client.angle;
-		
+
 		return packet;
+	}
+	friend sf::Packet& operator>>(sf::Packet& packet, ClientInfo& client) // overide the >> function for packets for ClientInfo
+	{
+		packet >> client.id;
+		packet >> client.username;
+		packet >> client.x;
+		packet >> client.y;
+		packet >> client.speed;
+		packet >> client.angle;
+
+		return packet;
+	}
+
+	void printInfo()
+	{
+		std::cout
+			<< "ID - " << id << "\n"
+			<< "Username - " << username << "\n"
+			<< "x - " << x << "\n"
+			<< "y - " << y << "\n"
+			<< "speed - " << speed << "\n"
+			<< "angle - " << angle << "\n";
 	}
 };

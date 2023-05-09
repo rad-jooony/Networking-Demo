@@ -26,10 +26,13 @@ void Game::Run(sf::RenderWindow& window)
 	std::thread recvThread(&Receiver::recvLoop, receiver);
 
 	// GET INFO FROM SERVER // This will be the player's ID
-	recvThread
+	ClientInfo myClientInfo;
+	
+	sf::Packet pack = queue.pop();
+	pack >> myClientInfo;
+	myClientInfo.printInfo();
+	int localUser{ myClientInfo.id };
 
-
-	int localUser{ 0 };
 
 	// GAME INITIALISATION
 	sf::Texture tBackground, tCar;

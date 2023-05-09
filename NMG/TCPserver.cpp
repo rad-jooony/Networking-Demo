@@ -30,21 +30,24 @@ void Accepter::operator()()//double bracket makes this a function
 		}
 		// Now it is able to accept messages
 
-		/// SEND  CLIENT INFO TO THIS PORT FOR SETUP
-		ClientInfo newClient;
-		newClient.id = _socket.size();
-		sf::Packet pack;
-		pack << newClient;
-		socket->send(pack.getData(), pack.getDataSize());
-
 		_socket.push(socket); //add this socket to the list of sockets
 
-
+		std::stringstream ss;
 		std::cout << "Accepted a connection from: " << socket->getRemoteAddress() << ":" << socket->getRemotePort() << std::endl;
+		std::cout << ss.str();
 
 		std::shared_ptr<Receiver> receiver = std::make_shared<Receiver>(socket, _queue);
 		// launch a thread to receive with the receiver
 		std::thread(&Receiver::recvLoop, receiver).detach(); // thread lauches detached, meaning it doesnt need to wait to catch up
+
+		/// SEND  CLIENT INFO TO THIS PORT FOR SETUP
+		ClientInfo newClient;
+		newClient.id = _socket.size() - 1; //The number of sockets connected
+		newClient.printInfo();
+		sf::Packet pack;
+		pack << newClient;
+		std::cout << "CLIENTS CONNECTED " << _socket.size() << "\n";
+		socket->send(pack.getData(), pack.getDataSize());
 	}
 }
 
@@ -70,7 +73,6 @@ void TCPserver()
 
 		if (pack.getDataSize() > 0) // if there is data
 			sockets.for_each(send_to_one);
-
 	}
 	return;
 }

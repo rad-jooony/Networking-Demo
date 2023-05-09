@@ -11,33 +11,39 @@ Receiver::Receiver(std::shared_ptr<sf::TcpSocket> s,
     _queue(q)
 {}
 
-sf::Packet transferPacket(Queue<sf::Packet>& q) //hands the packet information and pops the queue
-{
-    return q.pop();
-}
-
 void Receiver::recvLoop()
 {
     char buffer[256];
     {
         std::stringstream ss;
-        ss << _socket->getRemoteAddress() << ":" << _socket->getRemotePort() << std::endl;
+        ss << "RECIEVER INFO :: " << _socket->getRemoteAddress() << ":" << _socket->getRemotePort() << std::endl;
         std::cout << ss.str();
     }
     while(1)
     {
         std::memset(buffer, 0, 256);
         std::size_t received;
+
         
-        _socket->receive(buffer, 256, received); //receive a message here
-        // TODO, socket may be closed
+        auto status = _socket->receive(buffer, 256, received); //receive a message here
+        if (status == sf::Socket::Done)
         {
-            std::stringstream ss;
-            ss << "Received: \"" << buffer << "\", " << received << " bytes." << std::endl;
-            std::cout << ss.str();
+            // append the buffer to the packet
+            sf::Packet receivedPacket;
+            receivedPacket.append(buffer, received);
+            {
+                std::stringstream ss;
+                std::cout << "Received: \"" << buffer << "\", " << received << " bytes." << std::endl;
+                std::cout << ss.str();
+            }
+            std::cout << "QUEUE HAS RECIVED THE INFO\n";
+            _queue.push(receivedPacket);
         }
-        sf::Packet pack;
-        pack << buffer;
-        _queue.push(pack);
+        else if (status == sf::Socket::Disconnected)
+        {
+            // handle socket disconnection
+            std::cout << "RecvLoop Dropped";
+            break;
+        }
     }
 }
