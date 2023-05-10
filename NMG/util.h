@@ -7,3 +7,11 @@
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
+#include <sstream>
+#include <iostream>
+
+/*
+std::stringstream ss;
+ss << "" << std::endl;
+std::cout << ss.str();
+*/

@@ -1,11 +1,12 @@
 #include <iostream>
 #include <thread>
+#include "util.h"
 #include <SFML/Network.hpp>
 #include "UDPServer.h"
 #include "TCPServer.h"
 
 
-void Client()
+void UDPClient()
 {
 	sf::UdpSocket socket; // client needs a socket to connect to?
 	if (socket.bind(CLIENTPORT) != sf::Socket::Done) //client needs socket to receive from the server
@@ -36,12 +37,48 @@ void Client()
 	std::cout << "Client: Message from Server : " << recMessage << "\n";
 }
 
+struct Player {
+	sf::Vector2f pos;
+	sf::Color colour;
+
+	void move()
+	{
+		if ((sf::Keyboard::isKeyPressed(sf::Keyboard::Up)))
+		{
+			--pos.y;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+		{
+			++pos.y;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+		{
+			--pos.x;
+		}
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+		{
+			++pos.x;
+		}
+	}
+};
+
+void game(sf::RenderWindow& window); //prototype
+
+void join();
 
 int main()
 {
-	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
-	sf::CircleShape shape(100.f);
-	shape.setFillColor(sf::Color::Green);
+	sf::RenderWindow window(sf::VideoMode(800, 800), "Network Testing");
+	sf::Font font;
+	if (!font.loadFromFile("data/unispace bd.ttf"))
+	{
+		std::cerr << "ERROR: cannot find font\n";
+		return false;
+	}
+	sf::Text text;
+	text.setFont(font);
+
+	bool keypress{ false };
 
 	while (window.isOpen())
 	{
@@ -52,10 +89,128 @@ int main()
 				window.close();
 		}
 
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H) && !keypress) // Select Host
+		{
+			std::thread TCPserverThread(&TCPServer);
+			TCPserverThread.detach();
+			std::thread UDPserverThread(&UDPServer);
+			UDPserverThread.detach();
+			game(window);
+		}
+
+		if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && !keypress) // Select Client
+		{
+			join();
+		}
+
 		window.clear();
-		window.draw(shape);
 		window.display();
 	}
 
 	return 0;
+}
+
+void game(sf::RenderWindow& window)
+{
+	// TCP SERVER CONNECT
+
+
+
+
+
+
+	// UDP SERVER CONNECT
+	sf::UdpSocket UDPsocket;
+	if (UDPsocket.bind(CLIENTPORT) != sf::Socket::Done) // Client binds UDPsocket to their own port
+	{
+		std::stringstream ss;
+		ss << "!!! Client Failed to bind UDP port -- Port is : " << CLIENTPORT << std::endl;
+		std::cout << ss.str();
+		return;
+	}
+	std::stringstream ss;
+	ss << "Client bound UDP server to port : " << CLIENTPORT << std::endl;
+	std::cout << ss.str();
+
+	// UDP test message
+	unsigned short serverPort = UDPPORT;
+	char buffer[1024];
+	std::size_t received = 0;
+	sf::IpAddress serverIp = "127.0.0.1"; //This IP refers to the local machine
+	std::string message = "Client to UDPServer test message : IP " + sf::IpAddress::getLocalAddress().toString();
+	UDPsocket.send(message.c_str(), message.size() + 1, serverIp, 55002);
+	if (UDPsocket.send(message.c_str(), message.size(), serverIp, UDPPORT) != sf::Socket::Done) //
+	{
+		std::cerr << "!!! Client could not send message to UDP server\n";
+		return;
+	}
+
+	if (UDPsocket.receive(buffer, sizeof(buffer), received, serverIp, serverPort) != sf::Socket::Done)
+	{
+		std::cerr << "Client: Failed to receive message from server\n";
+		return;
+	}
+	std::string recMessage(buffer, received); // get the massage and clean it up (its a mess with just buffer)
+	std::stringstream ss;
+	ss << "Client: Message from UDPserver : " << recMessage << "\n";
+	std::cout << ss.str();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	//GAME INITIALISATION
+	window.setFramerateLimit(60);
+	sf::CircleShape playerIcon;
+	playerIcon.setRadius(5);
+	int localPlayer{ 0 };
+	const int players{ 2 };
+	std::vector<sf::Color> colours{ sf::Color::Blue,sf::Color::Green, sf::Color::Red };
+	std::vector<Player> player(players, Player{});
+
+
+	// GAME RUNNING
+	while (window.isOpen())
+	{
+		sf::Event event;
+		while (window.pollEvent(event))
+		{
+			if (event.type == sf::Event::Closed)
+				window.close();
+		}
+
+		//LOCAL UPDATES
+		player[localPlayer].move();
+
+
+		// RENDERING
+		window.clear();
+		for (int i = 0; i < players; i++)
+		{
+			playerIcon.setFillColor(colours[i]);
+			playerIcon.setPosition(player[i].pos);
+			window.draw(playerIcon);
+		}
+		window.display();
+	}
+}
+
+void join()
+{
 }
