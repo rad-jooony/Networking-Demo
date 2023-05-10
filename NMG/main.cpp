@@ -91,6 +91,7 @@ int main()
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::H) && !keypress) // Select Host
 		{
+			keypress = true;
 			std::thread TCPserverThread(&TCPServer);
 			TCPserverThread.detach();
 			std::thread UDPserverThread(&UDPServer);
@@ -101,6 +102,11 @@ int main()
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && !keypress) // Select Client
 		{
 			join();
+		}
+
+		if (keypress == true && !sf::Keyboard::isKeyPressed(sf::Keyboard::H) && !sf::Keyboard::isKeyPressed(sf::Keyboard::C))
+		{
+			keypress = false;
 		}
 
 		window.clear();
@@ -137,25 +143,25 @@ void game(sf::RenderWindow& window)
 	char buffer[1024];
 	std::size_t received = 0;
 	sf::IpAddress serverIp = "127.0.0.1"; //This IP refers to the local machine
-	std::string message = "Client to UDPServer test message : IP " + sf::IpAddress::getLocalAddress().toString();
+	std::string message = "Client to UDPServer :: test message : IP  -- " + sf::IpAddress::getLocalAddress().toString() + "\n";
 	UDPsocket.send(message.c_str(), message.size() + 1, serverIp, 55002);
+
 	if (UDPsocket.send(message.c_str(), message.size(), serverIp, UDPPORT) != sf::Socket::Done) //
 	{
 		std::cerr << "!!! Client could not send message to UDP server\n";
 		return;
 	}
 
-	if (UDPsocket.receive(buffer, sizeof(buffer), received, serverIp, serverPort) != sf::Socket::Done)
+	bool test = UDPsocket.isBlocking();
+	auto status = UDPsocket.receive(buffer, sizeof(buffer), received, serverIp, serverPort); //port is disconected - is this normal
+
+	if (status == sf::Socket::Done)
 	{
-		std::cerr << "Client: Failed to receive message from server\n";
-		return;
+		std::string recMessage(buffer, received);
+		ss.clear();
+		ss << "Client: Message from UDPserver : " << recMessage << "\n";
+		std::cout << ss.str();
 	}
-	std::string recMessage(buffer, received); // get the massage and clean it up (its a mess with just buffer)
-	std::stringstream ss;
-	ss << "Client: Message from UDPserver : " << recMessage << "\n";
-	std::cout << ss.str();
-
-
 
 
 

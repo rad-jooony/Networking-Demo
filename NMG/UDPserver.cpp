@@ -4,21 +4,28 @@
 void UDPServer()
 {
 	sf::UdpSocket UDPsocket;
-	UDPsocket.bind(UDPPORT);
+	if (UDPsocket.bind(UDPPORT) != sf::Socket::Done);
+	{
+		std::cout << "!!! UDP Socket is not bound\n";
+	}
 
 	char buffer[1024];
 	std::size_t received = 0;
 	sf::IpAddress senderIp;
 	unsigned short senderPort = UDPPORT;
 
-	if (UDPsocket.receive(buffer, sizeof(buffer), received, senderIp, senderPort) != sf::Socket::Done)
+	while (1)
 	{
-		std::cerr << "!!! UDPserver didnt recive message from client\n";
-		return;
-	}
-	std::stringstream ss;
-	ss << "UDP: Client connected" + senderIp.toString();
-	std::cout << ss.str();
+		if (UDPsocket.receive(buffer, sizeof(buffer), received, senderIp, senderPort) != sf::Socket::Done)
+		{
+			std::cerr << "!!! UDPserver didnt recive message from client\n";
+			return;
+		}
+		std::stringstream ss;
+		ss << "UDP: message from" << senderIp.toString() << " -- " << (std::string(buffer, received)) << "\n";
+		std::cout << ss.str();
 
-	UDPsocket.send(message.c_str(), message.size() + 1, sender, senderPort);
+		std::string message{ "UDP Test message to the client\n" };
+		UDPsocket.send(message.c_str(), message.size() + 1, senderIp, senderPort);
+	}
 }
