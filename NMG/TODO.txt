@@ -1,0 +1,4 @@
+
+
+UDP currently doesn't bind, but send a message anyway? not sure whats up with that.
+^^ basically figure this out, then try passing packets. Update the location, check this on another client. Might have to figure that out also
