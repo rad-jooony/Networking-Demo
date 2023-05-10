@@ -1,60 +1,61 @@
-/*
-Networking and Multiplayer Demo
-
-Things to note for moving to the Linux machines
-Use Code::Blocks
-SetFillColor is just SetColor
-Remember to include the Font
-
-*/
-
-#include "TCPserver.h"
-#include "client.h"
-#include "FrontEnd.h"
 #include <iostream>
 #include <thread>
+#include <SFML/Network.hpp>
+#include "UDPServer.h"
+#include "TCPServer.h"
 
-int game()
+
+void Client()
 {
-	srand((unsigned)time(NULL));
-	FrontEnd MyGame;
-	MyGame.Run();
-	return 0;
+	sf::UdpSocket socket; // client needs a socket to connect to?
+	if (socket.bind(CLIENTPORT) != sf::Socket::Done) //client needs socket to receive from the server
+	{
+		std::cerr << "Client: Socket not binding - Port : " << CLIENTPORT << "\n";
+		return;
+	}
+	std::cout << "Client connected to port : " << CLIENTPORT << "\n";
+
+	std::string message = "Hello from client";
+	char buffer[1024];
+	std::size_t received = 0;
+	sf::IpAddress serverIp = "127.0.0.1"; //this address specifically refers to the local machine
+	unsigned short serverPort = UDPPORT; //for whatever reason the socket.send() doesnt like ints (or at least raw numbers) but will take unsigned shorts 
+
+	if (socket.send(message.c_str(), message.size(), serverIp, serverPort) != sf::Socket::Done)
+	{
+		std::cerr << "Client: Failed to send message to server\n";
+		return;
+	}
+
+	if (socket.receive(buffer, sizeof(buffer), received, serverIp, serverPort) != sf::Socket::Done)
+	{
+		std::cerr << "Client: Failed to receive message from server\n";
+		return;
+	}
+	std::string recMessage(buffer, received); // get the massage and clean it up (its a mess with just buffer)
+	std::cout << "Client: Message from Server : " << recMessage << "\n";
 }
+
 
 int main()
 {
-	while (1)
+	sf::RenderWindow window(sf::VideoMode(200, 200), "SFML works!");
+	sf::CircleShape shape(100.f);
+	shape.setFillColor(sf::Color::Green);
+
+	while (window.isOpen())
 	{
-		std::cout << "select what to run - Game or Server Debug - (g/s)\n";
-		std::string pick;
-		std::cin >> pick;
-
-		if (pick == "g")
-			game();
-		if (pick == "s")
-			break;
-	}
-
-	while (1)
-	{
-		std::cout << "select what to run - Client/UDP/TCP - (c/u/t)\n";
-		std::string pick;
-		std::cin >> pick;
-
-		if (pick == "t")
+		sf::Event event;
+		while (window.pollEvent(event))
 		{
-			std::thread TCPserverThread(&TCPserver);
-			TCPserverThread.detach();
+			if (event.type == sf::Event::Closed)
+				window.close();
 		}
 
-		if (pick == "u")
-			std::cerr << "UDP server not yet made";
-
-		if (pick == "c")
-			client();
+		window.clear();
+		window.draw(shape);
+		window.display();
 	}
+
 	return 0;
 }
-
-

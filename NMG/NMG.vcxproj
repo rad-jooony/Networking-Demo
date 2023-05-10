@@ -148,28 +148,15 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="Car.cpp" />
-    <ClCompile Include="Client.cpp" />
-    <ClCompile Include="Game.cpp" />
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="oldGame.cpp" />
-    <ClCompile Include="FrontEnd.cpp" />
     <ClCompile Include="Receiver.cpp" />
-    <ClCompile Include="TCPserver.cpp" />
-    <ClCompile Include="UDPserver.cpp" />
+    <ClCompile Include="TCPServer.cpp" />
+    <ClCompile Include="UDPServer.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="Car.h" />
-    <ClInclude Include="Client.h" />
-    <ClInclude Include="ClientInfo.h" />
-    <ClInclude Include="Game.h" />
-    <ClInclude Include="List.h" />
-    <ClInclude Include="FrontEnd.h" />
-    <ClInclude Include="Map.h" />
-    <ClInclude Include="Queue.h" />
     <ClInclude Include="Receiver.h" />
-    <ClInclude Include="TCPserver.h" />
-    <ClInclude Include="UDPserver.h" />
+    <ClInclude Include="TCPServer.h" />
+    <ClInclude Include="UDPServer.h" />
     <ClInclude Include="Util.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

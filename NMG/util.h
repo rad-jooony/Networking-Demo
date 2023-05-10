@@ -1,15 +1,9 @@
-// Includes definitions for testing, also includes dependancies
-
 #pragma once
 
-#define PORT 4300
-#define TCP_PORT 4301
-#define UDP_PORT 4302
+// Utility file. Using this for various header files and includes that are used in most files
+
+#define UDPPORT 54000
+#define CLIENTPORT 54001
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
-
-#include "list.h"
-#include "queue.h"
-
-#include <sstream>
