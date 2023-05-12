@@ -7,8 +7,8 @@
 void Server()
 {
 	sf::UdpSocket socket;
-
-	if (socket.bind(UDPPORT) != sf::Socket::Done) //the server must bind in order to receive messages 
+	auto status = socket.bind(UDPPORT);
+	if (status != sf::Socket::Done) //the server must bind in order to receive messages 
 	{
 		std::cerr << "UDP: Socket not binding - Port : " << UDPPORT << "\n";
 		return;
