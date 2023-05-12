@@ -137,6 +137,7 @@ void game(sf::RenderWindow& window)
 	std::stringstream ss;
 	ss << "Client bound UDP server to port : " << CLIENTPORT << std::endl;
 	std::cout << ss.str();
+	ss.clear();
 
 	// UDP test message
 	unsigned short serverPort = UDPPORT;
@@ -152,8 +153,9 @@ void game(sf::RenderWindow& window)
 		return;
 	}
 
-	bool test = UDPsocket.isBlocking();
-	auto status = UDPsocket.receive(buffer, sizeof(buffer), received, serverIp, serverPort); //port is disconected - is this normal
+
+	sf::Socket::Status status;
+	status = UDPsocket.receive(buffer, sizeof(buffer), received, serverIp, serverPort);
 
 	if (status == sf::Socket::Done)
 	{
@@ -161,6 +163,10 @@ void game(sf::RenderWindow& window)
 		ss.clear();
 		ss << "Client: Message from UDPserver : " << recMessage << "\n";
 		std::cout << ss.str();
+	}
+	else
+	{
+		std::cout << "socket status not done\n";
 	}
 
 

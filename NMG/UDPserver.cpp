@@ -4,7 +4,8 @@
 void UDPServer()
 {
 	sf::UdpSocket UDPsocket;
-	if (UDPsocket.bind(UDPPORT) != sf::Socket::Done);
+	auto status = UDPsocket.bind(UDPPORT);
+	if (status != sf::Socket::Done)
 	{
 		std::cout << "!!! UDP Socket is not bound\n";
 	}
@@ -22,7 +23,7 @@ void UDPServer()
 			return;
 		}
 		std::stringstream ss;
-		ss << "UDP: message from" << senderIp.toString() << " -- " << (std::string(buffer, received)) << "\n";
+		ss << "UDP: message from " << senderIp.toString() << " -- \n" << (std::string(buffer, received)) << "\n";
 		std::cout << ss.str();
 
 		std::string message{ "UDP Test message to the client\n" };
