@@ -255,9 +255,9 @@ void Game(sf::RenderWindow& window)
 		{
 			sf::Packet val = queue.front(); //this might require a mutex
 			std::string str, str2;
-			val >> str >> str2;
+			val >> str;
 			queue.pop_front();
-			std::cout << "Update :: " << str2 << "\n";
+			std::cout << "Update :: " << str << "\n";
 		}
 
 

@@ -51,7 +51,7 @@ void UDPServer() {
         {
             //if (client.ip != senderIp || client.port != senderPort) 
             {
-                UDPsocket.send(pack, sizeof(pack), client.ip, client.port);
+                UDPsocket.send(pack.getData(), pack.getDataSize(), client.ip, client.port);
             }
         }
     }
