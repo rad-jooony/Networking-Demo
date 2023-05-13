@@ -4,6 +4,7 @@
 #include <SFML/Network.hpp>
 #include "UDPServer.h"
 #include "TCPServer.h"
+#include <list>
 
 
 void UDPClient()
@@ -37,7 +38,8 @@ void UDPClient()
 	std::cout << "Client: Message from Server : " << recMessage << "\n";
 }
 
-struct Player {
+struct Player
+{
 	sf::Vector2f pos;
 	sf::Color colour;
 
@@ -62,9 +64,71 @@ struct Player {
 	}
 };
 
-void game(sf::RenderWindow& window); //prototype
+class ClientReceiver
+{
+private:
+	sf::TcpSocket* _tSocket;
+	sf::UdpSocket* _uSocket;
+	std::list<sf::Packet>& _queue;
+public:
+	ClientReceiver(sf::UdpSocket* UDPsocket, sf::TcpSocket* TCPsocket, std::list<sf::Packet>& queue) :
+		_tSocket(TCPsocket),
+		_uSocket(UDPsocket),
+		_queue(queue) {};
 
-void join();
+	void RecLoop()
+	{
+		char buffer[256];
+		{
+			std::stringstream ss;
+			ss << "Receiver :: " << _tSocket->getRemoteAddress() << ":" << _tSocket->getRemotePort() << std::endl;
+			std::cout << ss.str();
+		}
+		_tSocket->setBlocking(false); // remove blocking from TCPsocket
+		while (1)
+		{
+			std::memset(buffer, 0, 256); //clear the buffer
+			std::size_t received;
+			sf::Packet packet;
+			sf::IpAddress UDPIp = "127.0.0.1"; //this address specifically refers to the local machine
+			unsigned short UDPPort = UDPPORT;
+			// first check from the TCP client
+
+			auto status = _tSocket->receive(buffer, 256, received);
+			if (status == sf::Socket::Done)
+			{
+				// append the buffer to the packet
+				packet.append(buffer, received);
+				{
+					std::stringstream ss;
+					std::cout << "From TCP - Received: \"" << buffer << "\", " << received << " bytes." << std::endl;
+					std::cout << ss.str();
+				}
+				_queue.push_back(packet); // place info at the back
+			}
+			else if (status == sf::Socket::Disconnected)
+			{
+				// handle socket disconnection
+				std::cout << "RecvLoop Dropped";
+				break;
+			}
+
+			status = _uSocket->receive(buffer, sizeof(buffer), received, UDPIp, UDPPort);
+			if (status == sf::Socket::Done)
+			{
+				packet.append(buffer, received);
+				std::stringstream ss;
+				std::cout << "From UDP - Received: \"" << buffer << "\", " << received << " bytes." << std::endl;
+				std::cout << ss.str();
+				_queue.push_back(packet);
+			}
+		}
+	}
+};
+
+void Game(sf::RenderWindow& window); //prototype
+
+void Join();
 
 int main()
 {
@@ -96,12 +160,12 @@ int main()
 			TCPserverThread.detach();
 			std::thread UDPserverThread(&UDPServer);
 			UDPserverThread.detach();
-			game(window);
+			Game(window);
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && !keypress) // Select Client
 		{
-			join();
+			Join();
 		}
 
 		if (keypress == true && !sf::Keyboard::isKeyPressed(sf::Keyboard::H) && !sf::Keyboard::isKeyPressed(sf::Keyboard::C))
@@ -115,10 +179,10 @@ int main()
 	return 0;
 }
 
-void game(sf::RenderWindow& window)
+void Game(sf::RenderWindow& window)
 {
 	// TCP SERVER CONNECT
-
+	sf::TcpSocket TCPsocket;
 
 
 
@@ -144,34 +208,18 @@ void game(sf::RenderWindow& window)
 	std::size_t received = 0;
 	sf::IpAddress serverIp = "127.0.0.1"; //This IP refers to the local machine
 	std::string message = "Client to UDPServer :: test message : IP  -- " + sf::IpAddress::getLocalAddress().toString() + "\n";
-	UDPsocket.send(message.c_str(), message.size() + 1, serverIp, 55002);
 
-	if (UDPsocket.send(message.c_str(), message.size(), serverIp, UDPPORT) != sf::Socket::Done) 
+	if (UDPsocket.send(message.c_str(), message.size(), serverIp, UDPPORT) != sf::Socket::Done)
 	{
 		std::cerr << "!!! Client could not send message to UDP server\n";
 		return;
 	}
 
-	sf::Socket::Status status;
-	sf::sleep(sf::seconds(1));
-	status = UDPsocket.receive(buffer, sizeof(buffer), received, serverIp, serverPort);
-
-	
-
-	if (status == sf::Socket::Done)
-	{
-		std::string recMessage(buffer, received);
-		ss.clear();
-		ss << "Client: Message from UDPserver : " << recMessage << "\n";
-		std::cout << ss.str();
-	}
-	else
-	{
-		std::cout << "socket status not done\n";
-	}
-
-
-
+	//Launch client Receiver 
+	std::list<sf::Packet> queue;
+	ClientReceiver clientReceiver(&UDPsocket, &TCPsocket, queue);
+	std::thread receiverThread(&ClientReceiver::RecLoop, clientReceiver);
+	receiverThread.detach();
 
 	//GAME INITIALISATION
 	window.setFramerateLimit(60);
@@ -194,9 +242,25 @@ void game(sf::RenderWindow& window)
 		}
 
 		//LOCAL UPDATES
+		auto temppos = player[localPlayer].pos;
 		player[localPlayer].move();
+		if (player[localPlayer].pos != temppos)
+		{
+			std::string str = std::to_string(temppos.x);
+			UDPsocket.send(str.c_str(), str.size() + 1, serverIp, UDPPORT);
+		}
 
 		//SERVER UPDATES
+		while (!queue.empty())
+		{
+			sf::Packet val = queue.front(); //this might require a mutex
+			std::string str, str2;
+			val >> str >> str2;
+			queue.pop_front();
+			std::cout << "Update :: " << str2 << "\n";
+		}
+
+
 
 
 		// RENDERING
@@ -209,8 +273,9 @@ void game(sf::RenderWindow& window)
 		}
 		window.display();
 	}
+
 }
 
-void join()
+void Join()
 {
 }

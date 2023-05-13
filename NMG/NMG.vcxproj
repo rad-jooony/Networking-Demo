@@ -154,6 +154,7 @@
     <ClCompile Include="UDPServer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Messages.h" />
     <ClInclude Include="Receiver.h" />
     <ClInclude Include="TCPServer.h" />
     <ClInclude Include="UDPServer.h" />
