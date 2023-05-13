@@ -19,7 +19,7 @@ void UDPServer()
 	{
 		if (UDPsocket.receive(buffer, sizeof(buffer), received, senderIp, senderPort) != sf::Socket::Done)
 		{
-			std::cerr << "!!! UDPserver didnt recive message from client\n";
+			std::cerr << "!!! UDPserver didnt recieve message from client\n";
 			return;
 		}
 		std::stringstream ss;

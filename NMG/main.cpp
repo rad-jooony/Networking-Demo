@@ -112,7 +112,6 @@ int main()
 		window.clear();
 		window.display();
 	}
-
 	return 0;
 }
 
@@ -147,15 +146,17 @@ void game(sf::RenderWindow& window)
 	std::string message = "Client to UDPServer :: test message : IP  -- " + sf::IpAddress::getLocalAddress().toString() + "\n";
 	UDPsocket.send(message.c_str(), message.size() + 1, serverIp, 55002);
 
-	if (UDPsocket.send(message.c_str(), message.size(), serverIp, UDPPORT) != sf::Socket::Done) //
+	if (UDPsocket.send(message.c_str(), message.size(), serverIp, UDPPORT) != sf::Socket::Done) 
 	{
 		std::cerr << "!!! Client could not send message to UDP server\n";
 		return;
 	}
 
-
 	sf::Socket::Status status;
+	sf::sleep(sf::seconds(1));
 	status = UDPsocket.receive(buffer, sizeof(buffer), received, serverIp, serverPort);
+
+	
 
 	if (status == sf::Socket::Done)
 	{
@@ -168,21 +169,6 @@ void game(sf::RenderWindow& window)
 	{
 		std::cout << "socket status not done\n";
 	}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -209,6 +195,8 @@ void game(sf::RenderWindow& window)
 
 		//LOCAL UPDATES
 		player[localPlayer].move();
+
+		//SERVER UPDATES
 
 
 		// RENDERING
