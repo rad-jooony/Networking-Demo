@@ -126,7 +126,7 @@ public:
 	}
 };
 
-void Game(sf::RenderWindow& window); //prototype
+void Game(sf::RenderWindow& window, unsigned int, int); //prototype
 
 void Join();
 
@@ -160,11 +160,13 @@ int main()
 			TCPserverThread.detach();
 			std::thread UDPserverThread(&UDPServer);
 			UDPserverThread.detach();
-			Game(window);
+			Game(window, CLIENTPORT, 0);
 		}
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::C) && !keypress) // Select Client
 		{
+			keypress = true;
+			Game(window, 4001, 1);
 			Join();
 		}
 
@@ -179,32 +181,29 @@ int main()
 	return 0;
 }
 
-void Game(sf::RenderWindow& window)
+void Game(sf::RenderWindow& window, unsigned int ClientPort, int TlocalPlayer)
 {
 	// TCP SERVER CONNECT
 	sf::TcpSocket TCPsocket;
 
 
-
-
-
 	// UDP SERVER CONNECT
 	sf::UdpSocket UDPsocket;
-	if (UDPsocket.bind(CLIENTPORT) != sf::Socket::Done) // Client binds UDPsocket to their own port
+	if (UDPsocket.bind(ClientPort) != sf::Socket::Done) // Client binds UDPsocket to their own port
 	{
 		std::stringstream ss;
-		ss << "!!! Client Failed to bind UDP port -- Port is : " << CLIENTPORT << std::endl;
+		ss << "!!! Client Failed to bind UDP port -- Port is : " << ClientPort << std::endl;
 		std::cout << ss.str();
 		return;
 	}
 	std::stringstream ss;
-	ss << "Client bound UDP server to port : " << CLIENTPORT << std::endl;
+	ss << "Client bound UDP server to port : " << ClientPort << std::endl;
 	std::cout << ss.str();
 	ss.clear();
 
 	// UDP test message
 	unsigned short serverPort = UDPPORT;
-	char buffer[1024];
+	//char buffer[1024];
 	std::size_t received = 0;
 	sf::IpAddress serverIp = "127.0.0.1"; //This IP refers to the local machine
 	std::string message = "Client to UDPServer :: test message : IP  -- " + sf::IpAddress::getLocalAddress().toString() + "\n";
@@ -225,10 +224,14 @@ void Game(sf::RenderWindow& window)
 	window.setFramerateLimit(60);
 	sf::CircleShape playerIcon;
 	playerIcon.setRadius(5);
-	int localPlayer{ 0 };
+	int localPlayer{ TlocalPlayer };
 	const int players{ 2 };
 	std::vector<sf::Color> colours{ sf::Color::Blue,sf::Color::Green, sf::Color::Red };
 	std::vector<Player> player(players, Player{});
+
+	ClientInfo myInfo;
+	myInfo.ip = "localhost";
+	myInfo.port = CLIENTPORT;
 
 
 	// GAME RUNNING
@@ -244,23 +247,28 @@ void Game(sf::RenderWindow& window)
 		//LOCAL UPDATES
 		auto temppos = player[localPlayer].pos;
 		player[localPlayer].move();
-		if (player[localPlayer].pos != temppos)
+
+		//SEND TO SERVER
+		if (myInfo.pos != temppos)
 		{
-			std::string str = std::to_string(temppos.x);
-			UDPsocket.send(str.c_str(), str.size() + 1, serverIp, UDPPORT);
+			myInfo.pos = player[localPlayer].pos;
+			sf::Packet pack;
+			pack << myInfo;
+			UDPsocket.send(pack.getData(), pack.getDataSize(), serverIp, serverPort);
 		}
 
 		//SERVER UPDATES
 		while (!queue.empty())
 		{
-			sf::Packet val = queue.front(); //this might require a mutex
-			std::string str, str2;
-			val >> str;
+			ClientInfo recInfo;
+			sf::Packet recPack = queue.front(); //this might require a mutex
+			recPack >> recInfo;
 			queue.pop_front();
-			std::cout << "Update :: " << str << "\n";
+			if (TlocalPlayer == 0)
+				player[1].pos = recInfo.pos;
+			else 
+				player[0].pos = recInfo.pos;
 		}
-
-
 
 
 		// RENDERING
