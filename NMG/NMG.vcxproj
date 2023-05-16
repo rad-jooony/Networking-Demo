@@ -149,16 +149,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="Receiver.cpp" />
     <ClCompile Include="TCPServer.cpp" />
     <ClCompile Include="UDPServer.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Messages.h" />
-    <ClInclude Include="Receiver.h" />
     <ClInclude Include="TCPServer.h" />
     <ClInclude Include="UDPServer.h" />
     <ClInclude Include="Util.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="reference.txt" />
+    <Text Include="TODO.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

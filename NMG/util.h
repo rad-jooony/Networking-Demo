@@ -4,6 +4,7 @@
 
 #define UDPPORT 54000
 #define CLIENTPORT 54001
+#define TCPPORT 54002
 
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>

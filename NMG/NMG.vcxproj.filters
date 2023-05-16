@@ -21,9 +21,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Receiver.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="TCPServer.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -38,14 +35,15 @@
     <ClInclude Include="UDPServer.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Receiver.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="Util.h">
       <Filter>Header Files\Util</Filter>
     </ClInclude>
     <ClInclude Include="Messages.h">
       <Filter>Header Files\Util</Filter>
     </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="reference.txt" />
+    <Text Include="TODO.txt" />
   </ItemGroup>
 </Project>
