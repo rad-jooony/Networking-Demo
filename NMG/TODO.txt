@@ -1,7 +1,7 @@
 
-//
-// Then try adding 2 players dynamically
-// then 3??
+// Figure out the crash
+// figure out teh jitter
+// figure out why each additional player cannot see any of the previous
 
 // move over to Car Game
 // adjust messages to accommodate
