@@ -43,9 +43,6 @@ void UDPServer()
 		return;
 	}
 
-	sf::IpAddress senderIp;
-	unsigned short senderPort = UDPPORT;
-
 	std::map<sf::IpAddress, unsigned short> connectedClients;
 	std::list<sf::Packet> queue;
 	UDPReceiver UDPReceiver(&UDPsocket, queue);
@@ -61,6 +58,12 @@ void UDPServer()
 			recPack >> recInfo;
 			queue.pop_front();
 			// check the senders IP and port in the client list. Use this to figure out if its a new client and add them to the client list (I should move this to the TCP server)
+			if (recInfo.type != EMsgType::positionUpdate)
+			{
+				// bad packet
+				continue;
+			}
+			
 			bool senderFound = false;
 			for (const auto& client : connectedClients)
 			{
@@ -73,14 +76,10 @@ void UDPServer()
 			if (!senderFound)
 				connectedClients.insert({ recInfo.ip, recInfo.port });
 
-			// If i figure out how to enum classes or something, do a check here for different message types
-
-
-
 			 // Send the message to all connected clients except the sender
 			for (const auto& client : connectedClients)
 			{
-				if (client.first != senderIp || client.second != senderPort) //dont send to self
+				if (client.first != recInfo.ip || client.second != recInfo.port) //dont send to self
 				{
 					UDPsocket.send(recPack.getData(), recPack.getDataSize(), client.first, client.second);
 				}

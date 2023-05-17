@@ -4,7 +4,8 @@
 enum EMsgType
 {
 	Setup,
-	positionUpdate
+	positionUpdate,
+	ballbusta
 };
 
 struct ClientInfo

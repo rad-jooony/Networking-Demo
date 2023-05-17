@@ -32,41 +32,26 @@ struct Player
 	}
 };
 
-class ClientReceiver
+class ClientReceiverLauncher
 {
 private:
 	std::shared_ptr<sf::TcpSocket> _tSocket;
 	sf::UdpSocket* _uSocket;
 	std::list<sf::Packet>& _queue;
 public:
-	ClientReceiver(sf::UdpSocket* UDPsocket, std::shared_ptr<sf::TcpSocket> TCPsocket, std::list<sf::Packet>& queue) :
+	ClientReceiverLauncher(sf::UdpSocket* UDPsocket, std::shared_ptr<sf::TcpSocket> TCPsocket, std::list<sf::Packet>& queue) :
 		_tSocket(TCPsocket),
 		_uSocket(UDPsocket),
 		_queue(queue) {};
 
-	void RecLoop()
+	void TCPRecLoop()
 	{
 		char buffer[256];
-		{
-			std::stringstream ss;
-			ss << "Receiver :: " << _tSocket->getRemoteAddress() << ":" << _tSocket->getRemotePort() << std::endl;
-			std::cout << ss.str();
-		}
-
-		_tSocket->setBlocking(false); // remove blocking from TCPsocket
-		_uSocket->setBlocking(false); // remove blocking from TCPsocket
-
-
-		// If I have time i should handle this better. Right now this feels very 'hacky'
+		std::memset(buffer, 0, 256); //clear the buffer
+		std::size_t received;
+		sf::Packet packet;
 		while (1)
 		{
-			std::memset(buffer, 0, 256); //clear the buffer
-			std::size_t received;
-			sf::Packet packet;
-			sf::IpAddress UDPIp = "127.0.0.1"; //this address specifically refers to the local machine
-			unsigned short UDPPort = UDPPORT;
-			// first check from the TCP client
-
 			auto tstatus = _tSocket->receive(buffer, 256, received);
 			if (tstatus == sf::Socket::Done)
 			{
@@ -83,26 +68,37 @@ public:
 			{
 				// handle socket disconnection
 				std::cout << "RecvLoop Dropped";
-				break;
+				return;
 			}
+		}
+	}
 
+	void UDPRecLoop()
+	{
+		char buffer[256];
+		std::memset(buffer, 0, 256); //clear the buffer
+		std::size_t received;
+		sf::Packet packet;
+
+		sf::IpAddress UDPIp = "127.0.0.1"; //this address specifically refers to the local machine
+		unsigned short UDPPort = UDPPORT;
+		while (1)
+		{
 			auto ustatus = _uSocket->receive(buffer, sizeof(buffer), received, UDPIp, UDPPort);
 			if (ustatus == sf::Socket::Done)
 			{
 				packet.append(buffer, received);
+				//ClientInfo testcli;
+				//packet >> testcli;
 				//std::stringstream ss;
-				//std::cout << "From UDP - Received: \"" << buffer << "\", " << received << " bytes." << std::endl;
+				//ss << " Player " << testcli.localID << "is at pos" << testcli.pos.x << " - " << testcli.pos.y << "\n";
 				//std::cout << ss.str();
 				_queue.push_back(packet);
-			}
-
-			if (ustatus == sf::Socket::NotReady || tstatus == sf::Socket::NotReady)
-			{
-				//sf::sleep(sf::milliseconds(10)); //sleep to ease up on the CPU
 			}
 		}
 	}
 };
+
 
 void Game(sf::RenderWindow& window); //prototype
 
@@ -195,13 +191,17 @@ void Game(sf::RenderWindow& window)
 
 	//LAUNCH CLIENT REC
 	std::list<sf::Packet> queue;
-	ClientReceiver clientReceiver(&UDPsocket, TCPsocket, queue);
-	std::thread receiverThread(&ClientReceiver::RecLoop, clientReceiver);
-	receiverThread.detach();
+	ClientReceiverLauncher clientReceiver(&UDPsocket, TCPsocket, queue);
+	std::thread TCPreceiverThread(&ClientReceiverLauncher::TCPRecLoop, clientReceiver);
+	TCPreceiverThread.detach();
+	std::thread UDPreceiverThread(&ClientReceiverLauncher::UDPRecLoop, clientReceiver);
+	UDPreceiverThread.detach();
 
 	//SEND AND REC MESSAGE FOR PLAYER SETUP
 	ClientInfo setupInfo;
 	setupInfo.type = EMsgType::Setup;
+	setupInfo.ip = sf::IpAddress::LocalHost;
+	setupInfo.port = ClientPort;
 	sf::Packet setupPack;
 	setupPack << setupInfo;
 	if (TCPsocket->send(setupPack.getData(), setupPack.getDataSize()) != sf::Socket::Done)
@@ -244,10 +244,7 @@ void Game(sf::RenderWindow& window)
 	std::vector<sf::Color> colours{ sf::Color::Blue,sf::Color::Green, sf::Color::Red };
 	std::vector<Player> player(players, Player{});
 
-	ClientInfo myInfo;
-	myInfo.ip = "localhost";
-	myInfo.port = ClientPort;
-	myInfo.localID = localPlayer;
+	ClientInfo myInfo = setupInfo;
 	myInfo.type = EMsgType::positionUpdate;
 
 	// GAME RUNNING
@@ -276,15 +273,24 @@ void Game(sf::RenderWindow& window)
 		//SERVER UPDATES
 		while (!queue.empty())
 		{
+			ClientInfo testcli;
+			sf::Packet pack;
+			pack = queue.front();
+			pack >> testcli;
+			std::stringstream ss;
+			ss << " Player " << testcli.localID << "is at pos" << testcli.pos.x << " - " << testcli.pos.y << "\n";
+			std::cout << ss.str();
+
+
+
 			ClientInfo recInfo;
 			sf::Packet recPack = queue.front(); //this might require a mutex
 			recPack >> recInfo;
 			queue.pop_front();
 
-			if (recInfo.localID != localPlayer)
+			if (recInfo.localID != localPlayer && recInfo.localID <= players)
 				player[recInfo.localID].pos = recInfo.pos;
 		}
-
 
 		// RENDERING
 		window.clear();
