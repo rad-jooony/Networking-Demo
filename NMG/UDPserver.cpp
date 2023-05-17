@@ -4,6 +4,12 @@
 #include <vector>
 #include <list>
 
+struct ClientConnection
+{
+	sf::IpAddress IP;
+	unsigned short port;
+};
+
 class UDPReceiver
 {
 private:
@@ -34,7 +40,7 @@ public:
 	}
 };
 
-void UDPServer() 
+void UDPServer()
 {
 	sf::UdpSocket UDPsocket;
 	auto status = UDPsocket.bind(UDPPORT);
@@ -43,7 +49,7 @@ void UDPServer()
 		return;
 	}
 
-	std::map<sf::IpAddress, unsigned short> connectedClients;
+	std::map<int, ClientConnection> connectedClients;
 	std::list<sf::Packet> queue;
 	UDPReceiver UDPReceiver(&UDPsocket, queue);
 	std::thread receiverThread(&UDPReceiver::RecLoop, UDPReceiver);
@@ -63,25 +69,31 @@ void UDPServer()
 				// bad packet
 				continue;
 			}
-			
+
+
+
 			bool senderFound = false;
 			for (const auto& client : connectedClients)
 			{
-				if (client.first == recInfo.ip && client.second == recInfo.port)
+				if (client.second.IP == recInfo.ip && client.second.port == recInfo.port)
 				{
 					senderFound = true;
 					break;
 				}
 			}
 			if (!senderFound)
-				connectedClients.insert({ recInfo.ip, recInfo.port });
+			{
+				ClientConnection newConnect{ recInfo.ip, recInfo.port };
+				connectedClients.insert({ recInfo.localID, newConnect });
+			}
 
-			 // Send the message to all connected clients except the sender
+
+			// Send the message to all connected clients except the sender
 			for (const auto& client : connectedClients)
 			{
-				if (client.first != recInfo.ip || client.second != recInfo.port) //dont send to self
+				if (client.second.IP != recInfo.ip || client.second.port != recInfo.port) //dont send to self
 				{
-					UDPsocket.send(recPack.getData(), recPack.getDataSize(), client.first, client.second);
+					UDPsocket.send(recPack.getData(), recPack.getDataSize(), client.second.IP, client.second.port);
 				}
 			}
 		}
