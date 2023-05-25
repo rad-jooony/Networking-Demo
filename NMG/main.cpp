@@ -7,6 +7,7 @@
 #include "util.h"
 #include "UDPServer.h"
 #include "TCPServer.h"
+
 /*
 b1634101 Jonathan Braine 
 Network and Multiplayer Games Project
@@ -87,7 +88,7 @@ public:
 
 			if (ustatus == sf::Socket::NotReady || tstatus == sf::Socket::NotReady)
 			{
-				//sf::sleep(sf::milliseconds(10)); //sleep to ease up on the CPU
+				// sf::sleep(sf::milliseconds(10)); //sleep to ease up on the CPU
 			}
 		}
 	}

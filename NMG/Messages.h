@@ -4,8 +4,7 @@
 enum EMsgType
 {
 	Setup,
-	positionUpdate,
-	ballbusta
+	positionUpdate
 };
 
 struct ClientInfo
@@ -23,6 +22,8 @@ public:
 	std::string username;
 	sf::Vector2f pos;
 	float speed, angle;
+
+
 	friend sf::Packet& operator<<(sf::Packet& packet, const ClientInfo& client) // override the << function for packets for ClientInfo
 	{
 		packet << client.type;

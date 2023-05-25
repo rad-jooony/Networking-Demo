@@ -55,8 +55,8 @@ void UDPServer()
 	std::thread receiverThread(&UDPReceiver::RecLoop, UDPReceiver);
 	receiverThread.detach();
 
-	while (true) {
-
+	while (true) 
+	{
 		if (queue.size() != 0)
 		{
 			ClientInfo recInfo;
